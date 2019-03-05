@@ -1,0 +1,8 @@
+framework module "MSMobile" {
+	header "ref.h"
+    header "MSMobile.objc.h"
+    header "Universe.objc.h"
+    header "MSMobile.h"
+
+    export *
+}
