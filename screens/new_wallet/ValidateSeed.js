@@ -81,6 +81,14 @@ export class ValidateSeed extends Component {
     return validArray.every((k) => k )
   }
 
+  onChaneHanlder(text, index) {
+    this.setState((prevState) => {
+      let state = prevState.valuesToValidates
+      state[index] = text
+      return { valuesToValidates: state }
+    })
+  }
+
   componentDidMount () {
     this.focusNextField(0)
   }
@@ -106,11 +114,7 @@ export class ValidateSeed extends Component {
                     autoCapitalize='none'
                     autoCorrect={false}
                     returnKeyType={ index === 2 ? "done" : "next" }
-                    onChangeText={(text) => {this.setState((prevState) => {
-                      let state = prevState.valuesToValidates
-                      state[index] = text
-                      return { valuesToValidates: state }
-                    })}}
+                    onChangeText={(text) => this.onChaneHanlder(text, index)}
                     blurOnSubmit={ index !== 2 ? false : true }
                     value={valuesToValidates[index]}
                     onFocus={() => {

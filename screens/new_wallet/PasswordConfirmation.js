@@ -1,8 +1,10 @@
 import React, { Component } from 'react'
 import { View, TextInput, Text, TouchableHighlight } from "react-native"
+import { ScaledSheet } from 'react-native-size-matters'
+
 import { InputIcon } from "../../components/Icons"
 import { HeaderText, DescriptionText } from "../../components/TextBlocks"
-import { ScaledSheet } from 'react-native-size-matters'
+import { BlueButton } from "../../components/Buttons"
 
 const colors = {
   active: "#0045e3",
@@ -23,7 +25,7 @@ export class PasswordConfirmation extends Component {
     super(props)
     const { navigation } = this.props
     const password = navigation.getParam('password', '')
-    const workflow = navigation.getParam('workflow', 'NewWallet')
+    this.submit = this.submit.bind(this)
     this.state = {
       passwordSubmitted: false,
       passwordError: false,
@@ -33,8 +35,7 @@ export class PasswordConfirmation extends Component {
       duplicateFocused: false,
       duplicatePassword: '',
       valid: false,
-      password,
-      workflow,
+      password
     }
   }
 
@@ -100,9 +101,16 @@ export class PasswordConfirmation extends Component {
     this.setState(state)
   }
 
+  submit () {
+    const { navigation } = this.props
+    const { password } = this.state
+    const workflow = navigation.getParam('workflow', 'NewWallet')
+    navigation.navigate((workflow === 'NewWallet' ? 'RememberSeed' : 'ImportSeed'), { password })
+  }
+
   render() {
     const { password, passwordSubmitted, duplicatePassword, duplicateSubmitted, duplicateError, 
-      passwordError, duplicateFocused, passwordFocused, valid, workflow } = this.state
+      passwordError, duplicateFocused, passwordFocused, valid } = this.state
     return (
       <View style={styles.container}>
         <HeaderText text='Create security password' />
@@ -151,16 +159,9 @@ export class PasswordConfirmation extends Component {
             {duplicateError && <Text style={styles.hint}>Passwords do not match</Text>}
           </View>
         </View>
-        { valid && ( <View style={{paddingTop: 30}}>
-            <TouchableHighlight
-              style={styles.submit}
-              onPress={() => { this.props.navigation.navigate((workflow === 'NewWallet' ? 'RememberSeed' : 'ImportSeed'), { password }) }}
-              underlayColor='#0045E2'>
-                <Text style={styles.submitText}>Save Password</Text>
-            </TouchableHighlight>
-          </View>)}
+        { valid && <BlueButton text='Save Password' handler={this.submit} /> }
       </View>
-    );
+    )
   }
 }
 
@@ -202,16 +203,5 @@ let styles = ScaledSheet.create({
     fontSize: '13@s',
     letterSpacing: -0.08,
     color: colors.error
-  },
-  submit:{
-    padding: '18@vs',
-    backgroundColor: "#0045E3",
-    borderRadius: '16@s',
-  },
-  submitText:{
-    color:'#FFFFFF',
-    fontWeight: "700",
-    fontSize: '15@s',
-    textAlign:'center',
   }
 })

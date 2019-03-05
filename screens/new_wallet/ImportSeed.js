@@ -1,7 +1,10 @@
 import React, { Component } from 'react'
 import {View, TextInput, Text} from "react-native"
-import { HeaderText, DescriptionText } from "../../components/TextBlocks"
 import { ScaledSheet } from 'react-native-size-matters'
+
+import { HeaderText, DescriptionText } from "../../components/TextBlocks"
+import { BlueButton } from "../../components/Buttons"
+
 
 export class ImportSeed extends Component {
   static navigationOptions = ({ navigation }) => {
@@ -12,14 +15,24 @@ export class ImportSeed extends Component {
     }
   }
 
-  state = {
-    seed: '',
-    valid: false,
-    height: 120
+  constructor (props) {
+    super(props)
+    this.submit = this.submit.bind(this)
+    this.state = {
+      seed: '',
+      valid: false
+    }
   }
 
-  updateSize (height) {
-    this.setState({height})
+  validateSeed (seed) {
+    this.setState({
+      seed: seed,
+      valid: seed.split(" ").length === 29
+    })
+  }
+
+  submit () {
+    alert('HERE')
   }
 
   render() {
@@ -39,13 +52,13 @@ export class ImportSeed extends Component {
                 textAlignVertical='top'
                 multiline={true}
                 editable={true}
-                onChangeText={(seed) => this.setState({seed})}
+                onChangeText={(seed) => this.validateSeed(seed)}
                 value={seed}
-                onContentSizeChange={(e) => this.updateSize(e.nativeEvent.contentSize.height)}
-                onSubmitEditing={() => {  }}
+                onSubmitEditing={() => { this.submit() }}
               />
             </View>
-            {valid && (<Text style={styles.hint}>Letters and numbers, minimum 8 symbols</Text>)}
+            <Text style={styles.hint}>Seed should be in format word1 word2 word3</Text>
+            { valid && ( <BlueButton text="Confirm" handler={this.submit}/>)}
           </View>
         </View>
       </View>
@@ -70,7 +83,7 @@ let styles = ScaledSheet.create({
     position: 'relative',
     borderRadius: '16@s',
     backgroundColor: "#F7F8FA",
-    height: '256@s'
+    height: '200@vs'
   },
   field: {
     width: "100%",
@@ -92,6 +105,17 @@ let styles = ScaledSheet.create({
     paddingRight: '15@s',
     fontSize: '13@s',
     color: "#8A8A8F"
+  },
+  submit:{
+    padding: '18@vs',
+    backgroundColor: "#0045E3",
+    borderRadius: '16@s',
+  },
+  submitText:{
+    color:'#FFFFFF',
+    fontWeight: "700",
+    fontSize: '15@s',
+    textAlign:'center',
   }
 })
 

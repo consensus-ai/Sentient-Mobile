@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import { View, Text, ImageBackground } from 'react-native'
 import { ScaledSheet } from 'react-native-size-matters'
 
-import { WalletButton } from '../components/WalletButton'
+import { WelcomeButton } from '../components/Buttons'
 
 export class Wallet extends Component {
 
@@ -19,8 +19,8 @@ export class Wallet extends Component {
             <Text style={styles.text}>The Capital City Farmers' Market is one of the jewels in the crown of Montpelier's{"\n"} downtown. Over 50 vendors gather each{"\n"} Saturday to sell locally-grown and handmade products, unique to Vermont and astounding in quality.</Text>
           </View>
           <View style={styles.buttons}>
-            <WalletButton text='Create a New Wallet' navigate={()=> { this.props.navigation.navigate('Password')}} />
-            <WalletButton text='Import Existing Seed' navigate={()=> { this.props.navigation.navigate('Password', {workflow: "Seed"})}} />
+            <WelcomeButton text='Create a New Wallet' navigate={()=> { this.props.navigation.navigate('Password')}} />
+            <WelcomeButton text='Import Existing Seed' navigate={()=> { this.props.navigation.navigate('Password', {workflow: "Seed"})}} />
           </View>
         </View>
       </ImageBackground>
@@ -49,7 +49,6 @@ let styles = ScaledSheet.create({
     width: "80%",
   },
   title:{
-    margin: 0,
     fontSize: '22@s',
     color: "#FFFFFF"
   },
