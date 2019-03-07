@@ -105,7 +105,7 @@ export class PasswordConfirmation extends Component {
     const { navigation } = this.props
     const { password } = this.state
     const workflow = navigation.getParam('workflow', 'NewWallet')
-    navigation.navigate((workflow === 'NewWallet' ? 'RememberSeed' : 'ImportSeed'), { password })
+    navigation.navigate((workflow === 'NewWallet' ? 'CheckSeed' : 'ImportSeed'), { password })
   }
 
   render() {

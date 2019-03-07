@@ -81,7 +81,7 @@ export class ValidateSeed extends Component {
     return validArray.every((k) => k )
   }
 
-  onChaneHanlder(text, index) {
+  onChangeHandler(text, index) {
     this.setState((prevState) => {
       let state = prevState.valuesToValidates
       state[index] = text
@@ -114,7 +114,7 @@ export class ValidateSeed extends Component {
                     autoCapitalize='none'
                     autoCorrect={false}
                     returnKeyType={ index === 2 ? "done" : "next" }
-                    onChangeText={(text) => this.onChaneHanlder(text, index)}
+                    onChangeText={(text) => this.onChangeHandler(text, index)}
                     blurOnSubmit={ index !== 2 ? false : true }
                     value={valuesToValidates[index]}
                     onFocus={() => {

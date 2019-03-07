@@ -2,8 +2,8 @@ import React, { Component } from 'react'
 import { View, Text, TouchableHighlight } from 'react-native'
 import { ScaledSheet } from 'react-native-size-matters'
 
-import { GoBackIcon, PaginationLeftIcon, PaginationRightIcon } from "../../components/Icons"
-import { HeaderText, DescriptionText, Pagination } from "../../components/TextBlocks"
+import { GoNextIcon } from "../../components/Icons"
+import { HeaderText, DescriptionText } from "../../components/TextBlocks"
 import { Overlay } from '../../components/Overlay'
 
 const Data = "icing lion tarnished wise kettle agenda rift bygones dwarf tiger rift phase ashtray palace superior river italics sabotage seasons badge kiosk technical impel perfect juicy adult northern truth acumen".split(' ')
@@ -13,11 +13,12 @@ export class CheckSeed extends Component {
   static navigationOptions = ({ navigation }) => {
     return {
       headerTitle: 'New Wallet',
-      headerLeft: (
+      headerLeft: null,
+      headerRight: (
         <TouchableHighlight
           underlayColor="#FFFFFF"
-          onPress={() => { navigation.goBack() }}>
-          <GoBackIcon />
+          onPress={() => { navigation.navigate('UserWarning') }}>
+          <GoNextIcon />
         </TouchableHighlight>
       ),
       headerStyle: { borderBottomWidth: 0 }
@@ -62,8 +63,8 @@ export class CheckSeed extends Component {
     return (
       <View style={styles.container}>
         <Overlay text={overlayText} closeOverlay={ this.closeOverlay } showOverlay={showOverlay} />
-        <HeaderText text="Check the words" />
-        <DescriptionText text={`Make sure you have written all ${seed.length} words in the order in which they are displayed.`} />
+        <HeaderText text="Write and remember your Seed" />
+        <DescriptionText text="This is the only way to recover your wallet. Do not show your seed to anyone." />
         <View style={styles.chipsView}>
           {Data.map((el, index) => {
             let name = `${index+1}. ${el}`
@@ -78,7 +79,6 @@ export class CheckSeed extends Component {
             )
           })}
         </View>
-        <Pagination next={this.nextStep} prev={this.prevStep} text="All words" />
       </View>
     )
   }
@@ -91,7 +91,6 @@ let styles = ScaledSheet.create({
   },
   chipsView: {
     flex: 4,
-    paddingTop: '20@vs',
     width: "95%",
     flexDirection: 'row',
     flexWrap: 'wrap',
@@ -102,7 +101,7 @@ let styles = ScaledSheet.create({
   chipsText: {
     color: "#000000",
     lineHeight: '20@s',
-    fontSize: '13@vs',
+    fontSize: '14@vs',
     letterSpacing: -0.2,
   },
   chips: {

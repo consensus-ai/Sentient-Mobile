@@ -37,7 +37,13 @@ export class PaginationRightIcon extends Component {
 
 export class GoBackIcon extends Component {
   render() {
-    return <Linericon name='go-back' size={verticalScale(16)} color="#0045E3" style={{left: 20}}/>
+    return <Linericon name='go-back' size={verticalScale(16)} color="#0045E3" style={{ left: 20 }} />
+  }
+}
+
+export class GoNextIcon extends Component {
+  render() {
+    return <Linericon name='go-back' size={verticalScale(16)} color="#0045E3" style={{right: 20, transform: [{ rotate: '180deg'}]}}/>
   }
 }
 
@@ -47,3 +53,8 @@ export class CloseIcon extends Component {
   }
 }
 
+export class WalletIcon extends Component {
+  render() {
+    return <Linericon name='lock' size={24} color="#0045E3"/>
+  }
+}

@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { View, Text, Dimensions, TouchableHighlight } from 'react-native'
+import { View, Text, Dimensions, TouchableHighlight, TextInput } from 'react-native'
 import Carousel from 'react-native-snap-carousel'
 import randomcolor from 'randomcolor'
 import { ScaledSheet } from 'react-native-size-matters'
@@ -29,6 +29,7 @@ export class RememberSeed extends Component {
       width: width,
       index: 0,
       colors: [],
+      seed: '',
       horizontalMargin: (width - (width*0.80))
     }
   }
@@ -64,8 +65,8 @@ export class RememberSeed extends Component {
     const { horizontalMargin, width, index } = this.state
     return (
       <View style={styles.container}>
-        <HeaderText text="Write and remember your Seed" />
-        <DescriptionText text='This is the only way to recover your wallet. Do not show your seed to anyone.' />
+        <HeaderText text="Copy header" />
+        <DescriptionText text='Copy description.' />
         <View style={styles.swipe}>
           <Carousel
             ref={(c) => { this._carousel = c }}
@@ -88,9 +89,17 @@ export class RememberSeed extends Component {
 
 export const Content = ({item, color, number}) => {
   return (
-    <TouchableHighlight style={[styles.swipeElement, {backgroundColor: color}]}>
-      <Text style={styles.swipeText}>{`${number}. ${item}`}</Text>
-    </TouchableHighlight>
+    <View style={styles.input}>
+      <Text style={styles.label}>Create Password</Text>
+      <TextInput
+        secureTextEntry={true}
+        style={styles.field}
+        autoFocus={true}
+        onChangeText={(item) => this.setState({item})}
+        value={item}
+        onSubmitEditing={() => { this.props.navigation.navigate('PasswordConfirmation', { password, workflow }) }}
+      />
+    </View>
   )
 }
 

@@ -1,15 +1,22 @@
 import React, { Component } from 'react'
-import {View, TextInput, Text} from "react-native"
+import { View, Text, Dimensions, TouchableHighlight, TextInput } from 'react-native'
+import Carousel from 'react-native-snap-carousel'
 import { ScaledSheet } from 'react-native-size-matters'
 
-import { HeaderText, DescriptionText } from "../../components/TextBlocks"
-import { BlueButton } from "../../components/Buttons"
+import { HeaderText, DescriptionText, Pagination } from "../../components/TextBlocks"
 
+const Data = Array(29).fill('')//"icing lion tarnished wise kettle agenda rift bygones dwarf tiger rift phase ashtray palace superior river italics sabotage seasons badge kiosk technical impel perfect juicy adult northern truth acumen".split(' ')
+
+const colors = {
+  active: "#0045e3",
+  error: "#F0374A",
+  normal: "#8A8A8F"
+}
 
 export class ImportSeed extends Component {
   static navigationOptions = ({ navigation }) => {
     return {
-      headerTitle: 'New Wallet',
+      headerTitle: 'Import Seed',
       headerLeft: null,
       headerStyle: { borderBottomWidth: 0 }
     }
@@ -17,50 +24,89 @@ export class ImportSeed extends Component {
 
   constructor (props) {
     super(props)
-    this.submit = this.submit.bind(this)
+    let { width } = Dimensions.get('window')
+    this.updateIndex = this.updateIndex.bind(this)
+    this.renderItem = this.renderItem.bind(this)
+    this.nextStep = this.nextStep.bind(this)
+    this.prevStep = this.prevStep.bind(this)
     this.state = {
-      seed: '',
-      valid: false
+      currentIndex: 0,
+      width: width,
+      horizontalMargin: (width - (width*0.80)),
+      seed: {}
     }
+    this.focusField = this.focusField.bind(this)
+    this.inputs = {}
   }
 
-  validateSeed (seed) {
-    this.setState({
-      seed: seed,
-      valid: seed.split(" ").length === 29
+  focusField(key) {
+    this.inputs[key].focus()
+  }
+
+  renderItem ({item, index}) {
+    const { seed } = this.state
+    return (
+      <View style={styles.input}>
+        <Text style={styles.label}>{`Word #${index+1}`}</Text>
+        <TextInput
+          ref={ input => {
+            this.inputs[index] = input
+          }}
+          style={styles.field}
+          onChangeText={(value) => this.onChangeHandler(value, index) }
+          value={seed[index]}
+          onSubmitEditing={() => { this.nextStep() }}
+        />
+      </View>
+    )
+  }
+
+  onChangeHandler(text, index) {
+    this.setState((prevState) => {
+      let seed = prevState.seed
+      seed[index] = text
+      return seed
     })
   }
 
-  submit () {
-    alert('HERE')
+  updateIndex () {
+    this.setState({currentIndex: this._carousel.currentIndex})
   }
 
-  render() {
-    const { seed, valid, height } = this.state
+  prevStep () {
+    this.focusField(this._carousel.currentIndex-1)
+    this._carousel.snapToPrev()
+  }
+
+  nextStep () {
+    if (this._carousel.currentIndex === (Data.length - 1)) {
+      this.props.navigation.navigate('CheckSeed', { seed: Data })
+    } else {
+      this.focusField(this._carousel.currentIndex + 1)
+      this._carousel.snapToNext()
+    }
+  }
+
+  render () {
+    const { horizontalMargin, width, currentIndex } = this.state
     return (
       <View style={styles.container}>
-        <HeaderText text='Enter a seed for wallet' />
-        <DescriptionText text='This password will be requested each time you enter the wallet.' />
-        <View style={[styles.inputs, {height: height}]}>
-          <View style={styles.inputGroup}>
-            <View style={styles.input}>
-              <Text style={styles.label}>Seed</Text>
-              <TextInput
-                secureTextEntry={true}
-                style={styles.field}
-                autoFocus={true}
-                textAlignVertical='top'
-                multiline={true}
-                editable={true}
-                onChangeText={(seed) => this.validateSeed(seed)}
-                value={seed}
-                onSubmitEditing={() => { this.submit() }}
-              />
-            </View>
-            <Text style={styles.hint}>Seed should be in format word1 word2 word3</Text>
-            { valid && ( <BlueButton text="Confirm" handler={this.submit}/>)}
-          </View>
+        <HeaderText text="Copy header" />
+        <DescriptionText text='Copy description.' />
+        <View style={styles.swipe}>
+          <Carousel
+            ref={(c) => { this._carousel = c }}
+            data={Data}
+            slideStyle={{justifyContent: 'center'}}
+            activeAnimationType='timing'
+            inactiveSlideShift={0}
+            sliderWidth={width}
+            itemWidth={ width -  horizontalMargin }
+            renderItem={this.renderItem}
+            onSnapToItem={this.updateIndex}
+          />
         </View>
+        <Pagination next={this.nextStep} prev={this.prevStep} text={`${currentIndex + 1} out of ${Data.length}`} />
       </View>
     )
   }
@@ -68,22 +114,31 @@ export class ImportSeed extends Component {
 
 let styles = ScaledSheet.create({
   container: {
-    position: 'relative',
     flex: 1,
     alignItems: 'center',
   },
-  inputs: {
-    width: "90%",
-    flex: 1
+  swipe: {
+    flex: 5,
+    alignItems: 'center',
+    justifyContent: 'center',
+    alignContent: 'center',
+    alignSelf: 'center'
   },
-  inputGroup: {
-    paddingTop: '20@vs'
+  swipeElement: {
+    padding: '14@s',
+    borderRadius: '20@s',
+  },
+  swipeText: {
+    color: "#ffffff",
+    textAlign: "center",
+    fontSize: '40@vs',
+    lineHeight: '48@vs',
   },
   input: {
     position: 'relative',
     borderRadius: '16@s',
     backgroundColor: "#F7F8FA",
-    height: '200@vs'
+    height: '56@s'
   },
   field: {
     width: "100%",
@@ -96,66 +151,6 @@ let styles = ScaledSheet.create({
     left: 15,
     fontSize: '11@s',
     fontWeight: '700',
-    color: "#0045e3"
+    color: colors.normal
   },
-  hint: {
-    paddingTop: '10@vs',
-    paddingBottom: '10@vs',
-    paddingLeft: '15@s',
-    paddingRight: '15@s',
-    fontSize: '13@s',
-    color: "#8A8A8F"
-  },
-  submit:{
-    padding: '18@vs',
-    backgroundColor: "#0045E3",
-    borderRadius: '16@s',
-  },
-  submitText:{
-    color:'#FFFFFF',
-    fontWeight: "700",
-    fontSize: '15@s',
-    textAlign:'center',
-  }
 })
-
-
-// import { View, Text, Button, NativeModules, TextInput} from 'react-native'
-
-// export class NewWallet extends Component {
-  
-
-//   constructor(props) {
-//     super(props);
-//     this.state = {text: ''};
-//   }
-
-//   componentDidMount() {
-    // NativeModules.MobileWallet.openWalletWithPassword('test', (err, data) => {
-    //   NativeModules.MobileWallet.numAddresses((err, data) => {
-    //     this.setState({countAddresses: data})
-    //     NativeModules.MobileWallet.addresses((err, data) => {
-    //       this.setState({address: data})
-    //     })
-    //     // for (i = 0; i < data; i++) {
-    //     //   NativeModules.MobileWallet.addressAtIndex(i, (err, data) => {
-    //     //     this.setState({address: [...this.state.address, data]})
-    //     //   })
-    //     // }
-    //   })
-    // })
-//   }
-
-//   render() {
-//     return (
-//       <View>
-//         <TextInput
-//           secureTextEntry={true}
-//           style={{height: 60}}
-//           placeholder="Create Password"
-//           onChangeText={(text) => this.setState({text})}
-//         />
-//       </View>
-//     );
-//   }
-// }

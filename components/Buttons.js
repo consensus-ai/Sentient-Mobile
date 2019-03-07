@@ -8,12 +8,12 @@ export const WelcomeButton = ({text, navigate}) => {
     button:{
       position: "relative",
       padding: '16@s',
-      backgroundColor:"rgba(0, 0, 0, 0.2)",
+      backgroundColor:"rgba(255, 255, 255, 0.7)",
       borderRadius: '16@s',
       marginTop: '15@s'
     },
     buttonText:{
-      color:'#FFFFFF',
+      color:'#000000',
       fontWeight: "600",
       fontSize: '15@s',
       letterSpacing: -0.24,
@@ -24,7 +24,7 @@ export const WelcomeButton = ({text, navigate}) => {
     <TouchableHighlight
       style={styles.button}
       onPress={navigate}
-      underlayColor="rgba(0, 0, 0, 0.4)">
+      underlayColor="rgba(255, 255, 255, 0.5)">
         <Text style={styles.buttonText}>{text}</Text>
     </TouchableHighlight>
   )
