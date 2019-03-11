@@ -1,10 +1,16 @@
-import React, { Component, Fragment } from 'react'
-import { View, Text, ImageBackground, Image, NativeModules } from 'react-native'
+import React, { Component } from 'react'
+import { View, Text, ImageBackground, TextInput, Image, NativeModules, KeyboardAvoidingView } from 'react-native'
 import { ScaledSheet } from 'react-native-size-matters'
 import SplashScreen from 'react-native-splash-screen'
 
 
 import { WelcomeButton } from '../components/Buttons'
+
+const colors = {
+  active: "#0045e3",
+  error: "#F0374A",
+  normal: "#8A8A8F"
+}
 
 export class WalletScreen extends Component {
 
@@ -16,7 +22,10 @@ export class WalletScreen extends Component {
     super(props)
     this._bootstrap()
     this.state = {
-      walletExists: false
+      walletExists: false,
+      passwordFocused: false,
+      passwordError: false,
+      password: ''
     }
   }
 
@@ -30,29 +39,57 @@ export class WalletScreen extends Component {
     SplashScreen.hide()
   }
 
+  passwordChanged (password) {
+    this.setState({ password })
+  }
+
+  signIn () {
+    const { password } = this.state
+    NativeModules.MobileWallet.openWalletWithPassword(password, (err, success) => {
+      if (success) {
+        this.props.navigation.navigate('Transactions')
+      } else {
+        console.log(err)
+        this.setState({ passwordError: true })
+      }
+    })
+  }
+
   render() {
 
-    const { walletExists } = this.state
+    const { passwordFocused, walletExists, password, passwordError } = this.state
 
     return (
-      <Fragment>
-        {walletExists && (
-          <View style={[styles.container, {justifyContent: 'center'}]}>
-            <Text>Hello</Text>
-          </View>
-        )}
-        {!walletExists && (
-          <ImageBackground source={require('../assets/images/content-bg.png')} style={styles.backgroundImage} >
-            <View style={styles.container}>
-              <Image source={require('../assets/images/icon.png')} style={styles.logo}/>
-              <View style={styles.buttons}>
-                <WelcomeButton text='Create a New Wallet' navigate={()=> { this.props.navigation.navigate('Password')}} />
-                <WelcomeButton text='Import Existing Seed' navigate={()=> { this.props.navigation.navigate('Password', {workflow: "Seed"})}} />
+      <ImageBackground source={require('../assets/images/content-bg.png')} style={styles.backgroundImage} >
+        <View style={styles.container}>
+          <Image source={require('../assets/images/icon.png')} style={styles.logo} />
+          { walletExists && (
+            <KeyboardAvoidingView style={styles.buttons}   behavior="padding">
+              <View style={styles.input}>
+                <Text style={[styles.label, {color: passwordError ? colors.error : (passwordFocused ? colors.active : colors.normal) }]}>Enter your password</Text>
+                <TextInput
+                  ref={(ref) => { this.passwordInput = ref }}
+                  secureTextEntry={true}
+                  returnKeyType='done'
+                  style={styles.field}
+                  onChangeText={(password) => this.passwordChanged(password)}
+                  onFocus={() => this.setState({ passwordFocused: true })}
+                  onBlur={() => { this.setState({ passwordFocused: false }) }}
+                  value={password}
+                  onSubmitEditing={() => this.signIn() }
+                />
               </View>
+              {passwordError && <Text style={styles.hint}>Incorrect password</Text>}
+            </KeyboardAvoidingView>
+          )}
+          { !walletExists && (
+            <View style={styles.buttons}>
+              <WelcomeButton text='Create a New Wallet' navigate={()=> { this.props.navigation.navigate('Password')}} />
+              <WelcomeButton text='Import Existing Seed' navigate={()=> { this.props.navigation.navigate('Password', { workflow: "Seed" })}} />
             </View>
-          </ImageBackground>
-        )}
-      </Fragment>
+          )}
+        </View>
+      </ImageBackground>
     )
   }
 }
@@ -92,5 +129,24 @@ let styles = ScaledSheet.create({
     lineHeight: 20,
     letterSpacing: -0.24,
     color: "#000",
-  }
+  },
+  input: {
+    position: 'relative',
+    borderRadius: '16@s',
+    backgroundColor: "#F7F8FA",
+    height: '56@s'
+  },
+  field: {
+    width: "100%",
+    paddingLeft: '15@s',
+    paddingRight: '15@s',
+    paddingTop: '18@s',
+  },
+  label: {
+    top: 10,
+    left: 15,
+    fontSize: '11@s',
+    fontWeight: '700',
+    color: "#0045e3"
+  },
 })

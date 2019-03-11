@@ -58,3 +58,21 @@ export class WalletIcon extends Component {
     return <Linericon name='lock' size={24} color="#0045E3"/>
   }
 }
+
+export class ClockIcon extends Component {
+  render() {
+    return <Linericon name='clock' size={17} color="#b4b4b4"/>
+  }
+}
+
+export class CashInIcon extends Component {
+  render() {
+    return <Linericon name='cash-in' size={24} color="#0045E3" />
+  }
+}
+
+export class CashOutIcon extends Component {
+  render() {
+    return <Linericon name='cash-out' size={24} color="#0045E3" />
+  }
+}

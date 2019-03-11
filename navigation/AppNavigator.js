@@ -22,7 +22,7 @@ const PollsStack = createStackNavigator({
   navigationOptions: {
     tabBarLabel: 'Polls',
   }
-});
+})
 
 const TodayStack = createStackNavigator({
   Today: Today,
@@ -30,13 +30,13 @@ const TodayStack = createStackNavigator({
   navigationOptions: {
     tabBarLabel: 'Today',
   }
-});
+})
 
 export default createAppContainer(createBottomTabNavigator({
-    TodayStack,
-    PollsStack,
+    //TodayStack,
     WalletStack,
     ProfileStack,
+    //PollsStack,
   }, {
     initialRouteName: "WalletStack",
     defaultNavigationOptions: ({ navigation }) => ({

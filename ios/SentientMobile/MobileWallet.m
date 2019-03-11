@@ -52,23 +52,6 @@ RCT_EXPORT_METHOD(createWalletWithPassword:(NSString *)password callback:(RCTRes
   callback(@[ [NSNull null], [NSNumber numberWithBool:YES] ]);
 }
 
-RCT_EXPORT_METHOD(createOrOpenWalletWithPassword:(NSString *)password callback:(RCTResponseSenderBlock)callback) {
-  CHECK_NO_WALLET();
-  if ([MobileWallet _walletExists]) {
-    RCTLogInfo(@"Wallet directory already exists; use openWalletWithPassword");
-    callback(@[ RCTMakeError(@"Wallet directory already exists", nil, nil), [NSNull null] ]);
-    return;
-  }
-  g_applicationWallet = MSMobileCreateNewWallet([MobileWallet _walletPath], password);
-  if (nil == g_applicationWallet) {
-    RCTLogInfo(@"wallet create error: %@", MSMobileLastError());
-    callback(@[ RCTMakeError(@"Wallet create error", MSMobileLastError(), nil), [NSNull null] ]);
-    return;
-  }
-  callback(@[ [NSNull null], [NSNumber numberWithBool:YES] ]);
-}
-
-
 RCT_EXPORT_METHOD(createWalletWithSeed:(NSString *)seed password:(NSString *)password callback:(RCTResponseSenderBlock)callback) {
   CHECK_NO_WALLET();
   if ([MobileWallet _walletExists]) {

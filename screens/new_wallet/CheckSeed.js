@@ -6,18 +6,17 @@ import { GoNextIcon } from "../../components/Icons"
 import { HeaderText, DescriptionText } from "../../components/TextBlocks"
 import { Overlay } from '../../components/Overlay'
 
-const Data = "icing lion tarnished wise kettle agenda rift bygones dwarf tiger rift phase ashtray palace superior river italics sabotage seasons badge kiosk technical impel perfect juicy adult northern truth acumen".split(' ')
-
 
 export class CheckSeed extends Component {
   static navigationOptions = ({ navigation }) => {
+    const seed = navigation.getParam('seed', '').split(' ')
     return {
       headerTitle: 'New Wallet',
       headerLeft: null,
       headerRight: (
         <TouchableHighlight
           underlayColor="#FFFFFF"
-          onPress={() => { navigation.navigate('UserWarning') }}>
+          onPress={() => { navigation.navigate('UserWarning', { seed }) }}>
           <GoNextIcon />
         </TouchableHighlight>
       ),
@@ -28,14 +27,14 @@ export class CheckSeed extends Component {
   constructor (props) {
     super(props)
     const { navigation } = this.props
-    const seed = navigation.getParam('seed', Data)
+    const seed = navigation.getParam('seed', '').split(' ')
     this.closeOverlay = this.closeOverlay.bind(this)
     this.nextStep = this.nextStep.bind(this)
     this.prevStep = this.prevStep.bind(this)
     this.state = {
-      seed,
       showOverlay: false,
-      overlayText: ''
+      overlayText: '',
+      seed,
     }
   }
 
@@ -55,7 +54,9 @@ export class CheckSeed extends Component {
   }
 
   nextStep () {
-    this.props.navigation.navigate('ValidateSeed')
+    const { seed } = this.state
+    console.log(seed)
+    this.props.navigation.navigate('ValidateSeed', { seed })
   }
 
   render() {
@@ -63,10 +64,10 @@ export class CheckSeed extends Component {
     return (
       <View style={styles.container}>
         <Overlay text={overlayText} closeOverlay={ this.closeOverlay } showOverlay={showOverlay} />
-        <HeaderText text="Write and remember your Seed" />
-        <DescriptionText text="This is the only way to recover your wallet. Do not show your seed to anyone." />
+        <HeaderText text="Important!" />
+        <DescriptionText text="Your seed is the only way to restore your wallet. DO NOT LOSE THIS PHRASE. You will not be able to recover it. Write it down EXACTLY in order and keep in secure location." />
         <View style={styles.chipsView}>
-          {Data.map((el, index) => {
+          {seed.map((el, index) => {
             let name = `${index+1}. ${el}`
             return (
               <TouchableHighlight key={index}

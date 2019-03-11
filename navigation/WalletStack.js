@@ -8,7 +8,7 @@ import { ImportSeed } from '../screens/new_wallet/ImportSeed'
 import { CheckSeed } from '../screens/new_wallet/CheckSeed'
 import { UserWarning } from '../screens/new_wallet/UserWarning'
 import { ValidateSeed } from '../screens/new_wallet/ValidateSeed'
-import { RememberSeed } from '../screens/new_wallet/RememberSeed'
+import { Error } from '../screens/new_wallet/Error'
 
 export default createStackNavigator({
   WalletScreen: WalletScreen,
@@ -19,7 +19,7 @@ export default createStackNavigator({
   ValidateSeed: ValidateSeed,
   ImportSeed: ImportSeed,
   Transactions: Transactions,
-  RememberSeed: RememberSeed
+  Error: Error
 },  {
   initialRouteName: 'WalletScreen',
   navigationOptions: {

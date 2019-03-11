@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { View, TextInput, Text, TouchableHighlight } from "react-native"
+import { View, TextInput, Text, NativeModules } from "react-native"
 import { ScaledSheet } from 'react-native-size-matters'
 
 import { InputIcon } from "../../components/Icons"
@@ -105,11 +105,27 @@ export class PasswordConfirmation extends Component {
     const { navigation } = this.props
     const { password } = this.state
     const workflow = navigation.getParam('workflow', 'NewWallet')
-    navigation.navigate((workflow === 'NewWallet' ? 'CheckSeed' : 'ImportSeed'), { password })
+    if (workflow === 'NewWallet') {
+      NativeModules.MobileWallet.createWalletWithPassword(password, (err, success) => {
+        if (success){
+          NativeModules.MobileWallet.primarySeed((err, seed) => {
+            if (seed) {
+              navigation.navigate('CheckSeed', { seed })
+            } else {
+              navigation.navigate('Error', { message: err.message })
+            }
+          })
+        } else {
+          navigation.navigate('Error', { message: err.message })
+        }
+      })
+    } else {
+      navigation.navigate('ImportSeed', { password })
+    }
   }
 
   render() {
-    const { password, passwordSubmitted, duplicatePassword, duplicateSubmitted, duplicateError, 
+    const { password, passwordSubmitted, duplicatePassword, duplicateSubmitted, duplicateError,
       passwordError, duplicateFocused, passwordFocused, valid } = this.state
     return (
       <View style={styles.container}>

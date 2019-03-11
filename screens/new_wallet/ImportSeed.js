@@ -1,11 +1,11 @@
 import React, { Component } from 'react'
-import { View, Text, Dimensions, TouchableHighlight, TextInput } from 'react-native'
+import { View, Text, Dimensions, NativeModules, TextInput } from 'react-native'
 import Carousel from 'react-native-snap-carousel'
 import { ScaledSheet } from 'react-native-size-matters'
 
 import { HeaderText, DescriptionText, Pagination } from "../../components/TextBlocks"
 
-const Data = Array(29).fill('')//"icing lion tarnished wise kettle agenda rift bygones dwarf tiger rift phase ashtray palace superior river italics sabotage seasons badge kiosk technical impel perfect juicy adult northern truth acumen".split(' ')
+const Seed = Array(29).fill('')
 
 const colors = {
   active: "#0045e3",
@@ -24,7 +24,7 @@ export class ImportSeed extends Component {
 
   constructor (props) {
     super(props)
-    let { width } = Dimensions.get('window')
+    const { width } = Dimensions.get('window')
     this.updateIndex = this.updateIndex.bind(this)
     this.renderItem = this.renderItem.bind(this)
     this.nextStep = this.nextStep.bind(this)
@@ -53,6 +53,7 @@ export class ImportSeed extends Component {
             this.inputs[index] = input
           }}
           style={styles.field}
+          returnKeyType={index === (Seed.length - 1) ? 'done' : 'next'}
           onChangeText={(value) => this.onChangeHandler(value, index) }
           value={seed[index]}
           onSubmitEditing={() => { this.nextStep() }}
@@ -63,7 +64,7 @@ export class ImportSeed extends Component {
 
   onChangeHandler(text, index) {
     this.setState((prevState) => {
-      let seed = prevState.seed
+      let { seed } = prevState
       seed[index] = text
       return seed
     })
@@ -74,13 +75,37 @@ export class ImportSeed extends Component {
   }
 
   prevStep () {
-    this.focusField(this._carousel.currentIndex-1)
-    this._carousel.snapToPrev()
+    const index = this._carousel.currentIndex
+    if (index === 0) {
+      const { navigation } = this.props
+      navigation.navigate('WalletScreen')
+    } else {
+      this.focusField(index-1)
+      this._carousel.snapToPrev()
+    }
+  }
+
+  createWallet () {
+    const { navigation } = this.props
+    let { seed } = this.state
+    const password = navigation.getParam('password', '')
+    seed = Object.values(seed).join(' ')
+    NativeModules.MobileWallet.createWalletWithSeed(seed, password, (err, success) => {
+      if (success) {
+        navigation.navigate('Transactions')
+      } else {
+        const data = {
+          header: 'Incorrect Seed Phrase',
+          message: 'One or more of the words entered for your existing seed are incorrect. Please go back to the previous step re-enter each word. Remember to check for spelling errors and that the words are entered in the correct order.',
+        }
+        navigation.navigate('Error', data)
+      }
+    })
   }
 
   nextStep () {
-    if (this._carousel.currentIndex === (Data.length - 1)) {
-      this.props.navigation.navigate('CheckSeed', { seed: Data })
+    if (this._carousel.currentIndex === (Seed.length - 1)) {
+      this.createWallet()
     } else {
       this.focusField(this._carousel.currentIndex + 1)
       this._carousel.snapToNext()
@@ -91,12 +116,12 @@ export class ImportSeed extends Component {
     const { horizontalMargin, width, currentIndex } = this.state
     return (
       <View style={styles.container}>
-        <HeaderText text="Copy header" />
-        <DescriptionText text='Copy description.' />
+        <HeaderText text="Enter Your Phrase" />
+        <DescriptionText text='Please enter your existing seed phrase words below. Please be sure to check spelling and that the words are entered in the exact order they were presented.' />
         <View style={styles.swipe}>
           <Carousel
             ref={(c) => { this._carousel = c }}
-            data={Data}
+            data={Seed}
             slideStyle={{justifyContent: 'center'}}
             activeAnimationType='timing'
             inactiveSlideShift={0}
@@ -106,7 +131,7 @@ export class ImportSeed extends Component {
             onSnapToItem={this.updateIndex}
           />
         </View>
-        <Pagination next={this.nextStep} prev={this.prevStep} text={`${currentIndex + 1} out of ${Data.length}`} />
+        <Pagination next={this.nextStep} prev={this.prevStep} text={`${currentIndex + 1} out of ${Seed.length}`} />
       </View>
     )
   }

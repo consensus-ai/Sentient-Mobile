@@ -6,8 +6,6 @@ import { InputIcon, GoBackIcon } from "../../components/Icons"
 import { HeaderText, DescriptionText } from "../../components/TextBlocks"
 
 
-const Data = "icing lion tarnished wise kettle agenda rift bygones dwarf tiger rift phase ashtray palace superior river italics sabotage seasons badge kiosk technical impel perfect juicy adult northern truth acumen".split(' ')
-
 const colors = {
   active: "#0045e3",
   error: "#F0374A",
@@ -36,9 +34,9 @@ export class ValidateSeed extends Component {
   constructor(props) {
     super(props)
     const { navigation } = this.props
-    const seed = navigation.getParam('password', Data)
+    const seed = navigation.getParam('seed', [])
     this.state = {
-      seed: seed,
+      seed,
       valuesToValidates: {},
       focusedInput: {0: true, 1: false, 2: false},
       submittedInput: {0: false, 1: false, 2: false},
@@ -76,8 +74,6 @@ export class ValidateSeed extends Component {
   valid () {
     const { valuesToValidates, seed, expectedIndexes } = this.state
     let validArray = expectedIndexes.map((el, index) => valuesToValidates[index] === seed[el])
-    console.log(validArray)
-    console.log(validArray.every((k) => k ))
     return validArray.every((k) => k )
   }
 
@@ -140,7 +136,7 @@ export class ValidateSeed extends Component {
         { this.valid() && ( <View style={{paddingTop: 15}}>
             <TouchableHighlight
               style={styles.submit}
-              onPress={() => { this.props.navigation.navigate('Seed', { password }) }}
+              onPress={() => { this.props.navigation.navigate('Transactions') }}
               underlayColor='#0045E2'>
                 <Text style={styles.submitText}>Create Wallet</Text>
             </TouchableHighlight>
