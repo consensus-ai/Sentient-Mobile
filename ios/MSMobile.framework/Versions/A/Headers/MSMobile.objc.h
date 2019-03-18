@@ -7,11 +7,41 @@
 #define __MSMobile_H__
 
 @import Foundation;
-#include "ref.h"
 #include "Universe.objc.h"
 
 
+@class MSMobileTransaction;
 @class MSMobileWallet;
+
+/**
+ * this represents a "user's view" of a transaction; that is, it
+only includes information pertinent to their wallet. so, a flag
+indicating incoming/outgoing and a list of "other addresses"
+(either sender or recipient depending on the flag) is
+sufficient.
+
+json included since serialized from client this structure
+ */
+@interface MSMobileTransaction : NSObject <goSeqRefInterface> {
+}
+@property(strong, readonly) id _ref;
+
+- (instancetype)initWithRef:(id)ref;
+- (instancetype)init;
+- (NSString*)identifier;
+- (void)setIdentifier:(NSString*)v;
+- (BOOL)incoming;
+- (void)setIncoming:(BOOL)v;
+// skipped field Transaction.Addresses with unsupported type: []string
+
+- (NSString*)amount;
+- (void)setAmount:(NSString*)v;
+- (long)stamp;
+- (void)setStamp:(long)v;
+- (BOOL)matured;
+- (void)setMatured:(BOOL)v;
+- (NSString*)singleAddress;
+@end
 
 @interface MSMobileWallet : NSObject <goSeqRefInterface> {
 }
@@ -20,7 +50,9 @@
 - (instancetype)initWithRef:(id)ref;
 - (instancetype)init;
 - (NSString*)addressAtIndex:(long)index;
+- (NSString*)estimatedFee;
 - (NSString*)getBalance;
+- (long)getNumTransactions;
 - (BOOL)isUnlocked;
 - (BOOL)lock;
 - (NSString*)makeNewAddress;
@@ -31,6 +63,7 @@
  */
 - (NSString*)sendSen:(NSString*)dest amount:(NSString*)amount;
 - (BOOL)setupClient:(NSString*)baseUrl;
+- (MSMobileTransaction*)transactionAtIndex:(long)index;
 - (BOOL)unlock:(NSString*)password;
 @end
 

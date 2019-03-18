@@ -73,5 +73,7 @@
 	</array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<false/>
+	<key>NSCameraUsageDescription</key>
+	<string>Sentient Mobile requires access to your camera to utilize it's QR Scanning feature. Please visit your application settings page and enable camera access.</string>
 </dict>
 </plist>

@@ -57,5 +57,4 @@ let styles = StyleSheet.create({
     lineHeight: 48,
     color: "#FFFFFF"
   }
-
 })

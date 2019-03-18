@@ -1,6 +1,6 @@
 //
 //  MobileWallet.h
-//  senmobile
+//  SentientMobile
 //
 //  Created by Alexander on 2/4/19.
 //  Copyright © 2019 Facebook. All rights reserved.

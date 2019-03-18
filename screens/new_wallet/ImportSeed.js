@@ -3,7 +3,8 @@ import { View, Text, Dimensions, NativeModules, TextInput } from 'react-native'
 import Carousel from 'react-native-snap-carousel'
 import { ScaledSheet } from 'react-native-size-matters'
 
-import { HeaderText, DescriptionText, Pagination } from "../../components/TextBlocks"
+import { HeaderText, DescriptionText } from "../../components/TextBlocks"
+import { Pagination } from "../../components/Pagination"
 
 const Seed = Array(29).fill('')
 
@@ -121,6 +122,7 @@ export class ImportSeed extends Component {
         <View style={styles.swipe}>
           <Carousel
             ref={(c) => { this._carousel = c }}
+            autoCapitalize={false}
             data={Seed}
             slideStyle={{justifyContent: 'center'}}
             activeAnimationType='timing'

@@ -2,6 +2,8 @@ import React from 'react'
 import { TouchableHighlight, Text, View } from 'react-native'
 import { ScaledSheet } from 'react-native-size-matters'
 
+import { ClearIcon } from './Icons'
+
 
 export const WelcomeButton = ({text, navigate}) => {
   let styles =  ScaledSheet.create({
@@ -53,5 +55,53 @@ export const BlueButton = ({text, handler}) => {
           <Text style={styles.buttonText}>{text}</Text>
       </TouchableHighlight>
     </View>
+  )
+}
+
+export const TransactionButton = ({text, handler}) => {
+  let styles = ScaledSheet.create({
+    button: {
+      paddingLeft: '30@vs',
+      paddingRight: '30@vs',
+      paddingTop: '14@vs',
+      paddingBottom: '14@vs',
+      marginLeft: 20,
+      width: '40%',
+      backgroundColor: '#0045E3',
+      borderRadius: '16@s',
+    },
+    buttonText: {
+      color:'#FFFFFF',
+      fontWeight: "700",
+      fontSize: '15@s',
+      textAlign:'center',
+    }
+  })
+  return (
+    <TouchableHighlight
+      style={styles.button}
+      onPress={handler}
+      underlayColor='#0045E2'>
+        <Text style={styles.buttonText}>{text}</Text>
+    </TouchableHighlight>
+  )
+}
+
+export const ClearButton = ({ handler, style = {} }) => {
+  let styles = ScaledSheet.create({
+    button: {
+      right: 10,
+      position: 'absolute',
+      borderRadius: 5,
+      backgroundColor: "#000000",
+      opacity: 0.3,
+      width: 14,
+      height: 14
+    }
+  })
+  return (
+    <TouchableHighlight style={[styles.button, style]} onPress={handler}>
+      <ClearIcon />
+    </TouchableHighlight>
   )
 }

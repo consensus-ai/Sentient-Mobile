@@ -30,10 +30,10 @@ export class PasswordConfirmation extends Component {
       passwordSubmitted: false,
       passwordError: false,
       passwordFocused: false,
-      duplicateError: false,
-      duplicateSubmitted: false,
-      duplicateFocused: false,
-      duplicatePassword: '',
+      confirmError: false,
+      confirmSubmitted: false,
+      confirmFocused: false,
+      confirmPassword: '',
       valid: false,
       password
     }
@@ -43,12 +43,12 @@ export class PasswordConfirmation extends Component {
     this.validatePassword()
   }
 
-  validateDuplicatePassword () {
-    const { password, duplicatePassword, passwordError } = this.state
+  confirmPassword () {
+    const { password, confirmPassword, passwordError } = this.state
     this.setState({
-      duplicateError: (password !== duplicatePassword),
-      duplicateSubmitted: true,
-      valid: (password === duplicatePassword && !passwordError),
+      confirmError: (password !== confirmPassword),
+      confirmSubmitted: true,
+      valid: (password === confirmPassword && !passwordError),
     })
   }
 
@@ -57,7 +57,7 @@ export class PasswordConfirmation extends Component {
     const regex = /[a-z0-9]{8,}/i
     const passwordTest = regex.test(password)
     if (passwordTest) {
-      this.duplicatePasswordInput.focus()
+      this.confirmPasswordInput.focus()
     }
     this.setState({
       passwordError: !passwordTest,
@@ -65,19 +65,19 @@ export class PasswordConfirmation extends Component {
     })
   }
 
-  duplicatePasswordChanged(duplicatePassword) {
-    const { duplicateError } = this.state
+  confirmPasswordChanged(confirmPassword) {
+    const { confirmError } = this.state
     let state = {
-      duplicatePassword: duplicatePassword,
+      confirmPassword: confirmPassword,
       valid: false,
     }
 
-    if (duplicateError) {
-      state.duplicateError = false
-      state.duplicateSubmitted = false
+    if (confirmError) {
+      state.confirmError = false
+      state.confirmSubmitted = false
     }
-    if (duplicatePassword.length === 0){
-      state.duplicateSubmitted = false
+    if (confirmPassword.length === 0){
+      state.confirmSubmitted = false
     }
     this.setState(state)
   }
@@ -87,9 +87,9 @@ export class PasswordConfirmation extends Component {
     let state = {
       valid: false,
       password: password,
-      duplicatePassword: '',
-      duplicateSubmitted: false,
-      duplicateError: false,
+      confirmPassword: '',
+      confirmSubmitted: false,
+      confirmError: false,
     }
     if (passwordError) {
       state.passwordError = false
@@ -125,8 +125,8 @@ export class PasswordConfirmation extends Component {
   }
 
   render() {
-    const { password, passwordSubmitted, duplicatePassword, duplicateSubmitted, duplicateError,
-      passwordError, duplicateFocused, passwordFocused, valid } = this.state
+    const { password, passwordSubmitted, confirmPassword, confirmSubmitted, confirmError,
+      passwordError, confirmFocused, passwordFocused, valid } = this.state
     return (
       <View style={styles.container}>
         <HeaderText text='Create security password' />
@@ -155,24 +155,24 @@ export class PasswordConfirmation extends Component {
           </View>
           <View style={styles.inputGroup}>
             <View style={styles.input}>
-              <Text style={[styles.label, {color: duplicateError ? colors.error : (duplicateFocused ? colors.active : colors.normal) }]}>Duplicate password</Text>
+              <Text style={[styles.label, {color: confirmError ? colors.error : (confirmFocused ? colors.active : colors.normal) }]}>Confirm Password</Text>
               <TextInput
-                ref={(ref) => { this.duplicatePasswordInput = ref }}
+                ref={(ref) => { this.confirmPasswordInput = ref }}
                 secureTextEntry={true}
                 returnKeyType='done'
                 style={styles.field}
-                onChangeText={(duplicatePassword) => this.duplicatePasswordChanged(duplicatePassword)}
-                onFocus={() => this.setState({ duplicateFocused: true })}
+                onChangeText={(confirmPassword) => this.confirmPasswordChanged(confirmPassword)}
+                onFocus={() => this.setState({ confirmFocused: true })}
                 onBlur={() => {
-                  this.setState({ duplicateFocused: false })
-                  this.validateDuplicatePassword()
+                  this.setState({ confirmFocused: false })
+                  this.confirmPassword()
                 }}
-                value={duplicatePassword}
-                onSubmitEditing={() => this.validateDuplicatePassword() }
+                value={confirmPassword}
+                onSubmitEditing={() => this.confirmPassword() }
               />
-              {duplicateSubmitted && (<InputIcon name={duplicateError ? "error" : "success"} />)}
+              {confirmSubmitted && (<InputIcon name={confirmError ? "error" : "success"} />)}
             </View>
-            {duplicateError && <Text style={styles.hint}>Passwords do not match</Text>}
+            {confirmError && <Text style={styles.hint}>Passwords do not match</Text>}
           </View>
         </View>
         { valid && <BlueButton text='Save Password' handler={this.submit} /> }

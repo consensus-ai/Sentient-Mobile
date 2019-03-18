@@ -59,20 +59,45 @@ export class WalletIcon extends Component {
   }
 }
 
-export class ClockIcon extends Component {
+export class TransactionStatusIcon extends Component {
   render() {
-    return <Linericon name='clock' size={17} color="#b4b4b4"/>
+    const { name } = this.props
+    return <Linericon name={name} size={17} color="#b4b4b4" />
   }
 }
 
 export class CashInIcon extends Component {
   render() {
-    return <Linericon name='cash-in' size={24} color="#0045E3" />
+    return <Linericon name='income' size={32} color="#07AF9A" />
   }
 }
 
 export class CashOutIcon extends Component {
   render() {
-    return <Linericon name='cash-out' size={24} color="#0045E3" />
+    return <Linericon name='consumption' size={32} color="#F0374A" />
+  }
+}
+
+export class ClearIcon extends Component {
+  render() {
+    return <Linericon name='close' size={8} color="#FFFFFF" style={{left: 3, top: 3}} />
+  }
+}
+
+export class CameraIcon extends Component {
+  render() {
+    return <Linericon name='camera' size={24} color="#0045E3" style={{left: 3, top: 3}} />
+  }
+}
+
+export class AddressIcon extends Component {
+  render() {
+    return <Linericon name='share' size={32} color="#8F58F3" style={{left: 3, top: 3}} />
+  }
+}
+
+export class AddAddress extends Component {
+  render() {
+    return <Linericon name='close' size={12} color="#ffffff" style={{ top: 10, left: 4, transform: [{ rotate: '45deg'}] }}/>
   }
 }

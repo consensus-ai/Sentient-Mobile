@@ -65,7 +65,7 @@ export class CheckSeed extends Component {
       <View style={styles.container}>
         <Overlay text={overlayText} closeOverlay={ this.closeOverlay } showOverlay={showOverlay} />
         <HeaderText text="Important!" />
-        <DescriptionText text="Your seed is the only way to restore your wallet. DO NOT LOSE THIS PHRASE. You will not be able to recover it. Write it down EXACTLY in order and keep in secure location." />
+        <DescriptionText text="DO NOT LOSE THIS PHRASE. You will not be able to recover it. Write it down EXACTLY in order and keep in secure location." />
         <View style={styles.chipsView}>
           {seed.map((el, index) => {
             let name = `${index+1}. ${el}`

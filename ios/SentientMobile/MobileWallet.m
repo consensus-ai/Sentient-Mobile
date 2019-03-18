@@ -1,6 +1,6 @@
 //
 //  MobileWallet.m
-//  senmobile
+//  SentientMobile
 //
 //  Created by Alexander on 2/4/19.
 //  Copyright © 2019 Facebook. All rights reserved.
@@ -26,6 +26,11 @@ MSMobileWallet * g_applicationWallet = nil;
   return (exists  &&  isDir);
 }
 
+-(void)setupDefaultClient
+{
+  [g_applicationWallet setupClient:@"http://54.187.3.185:8086"];
+}
+
 #define CHECK_FOR_WALLET() do { if (nil == g_applicationWallet) { RCTLogInfo(@"Wallet object does not exist"); callback(@[ RCTMakeError(@"Wallet object does not exist", nil, nil), [NSNull null] ]); return; } } while(0)
 
 #define CHECK_NO_WALLET() do { if (nil != g_applicationWallet) { RCTLogInfo(@"Wallet object already exists"); callback(@[ RCTMakeError(@"Wallet object already exists", nil, nil), [NSNull null] ]); return; } } while(0)
@@ -49,6 +54,7 @@ RCT_EXPORT_METHOD(createWalletWithPassword:(NSString *)password callback:(RCTRes
     callback(@[ RCTMakeError(@"Wallet create error", MSMobileLastError(), nil), [NSNull null] ]);
     return;
   }
+  [self setupDefaultClient];
   callback(@[ [NSNull null], [NSNumber numberWithBool:YES] ]);
 }
 
@@ -65,6 +71,7 @@ RCT_EXPORT_METHOD(createWalletWithSeed:(NSString *)seed password:(NSString *)pas
     callback(@[ RCTMakeError(@"Wallet create w/seed error", MSMobileLastError(), nil), [NSNull null] ]);
     return;
   }
+  [self setupDefaultClient];
   callback(@[ [NSNull null], [NSNumber numberWithBool:YES] ]);
 }
 
@@ -81,6 +88,7 @@ RCT_EXPORT_METHOD(openWalletWithPassword:(NSString *)password callback:(RCTRespo
     callback(@[ RCTMakeError(@"Wallet open error", MSMobileLastError(), nil), [NSNull null] ]);
     return;
   }
+  [self setupDefaultClient];
   callback(@[ [NSNull null], [NSNumber numberWithBool:YES] ]);
 }
 
@@ -134,11 +142,21 @@ RCT_EXPORT_METHOD(numAddresses:(RCTResponseSenderBlock)callback) {
 }
 
 RCT_EXPORT_METHOD(addresses:(RCTResponseSenderBlock)callback) {
+  CHECK_FOR_WALLET();
   int numAddrs = (int)[g_applicationWallet numAddresses];
+  if (0 == numAddrs) {
+    RCTLogInfo(@"Num addresses error: %@", MSMobileLastError());
+    callback(@[ RCTMakeError(@"Num addresses error", MSMobileLastError(), nil), [NSNull null] ]);
+    return;
+  }
   NSMutableArray * addresses = [[NSMutableArray alloc] init];
-
   for (NSInteger i = 0; i < numAddrs; ++i) {
     NSString * address = [g_applicationWallet addressAtIndex:(long)i];
+    if (0 == [address length]) {
+      RCTLogInfo(@"Get address error: %@", MSMobileLastError());
+      callback(@[ RCTMakeError(@"Get address error", MSMobileLastError(), nil), [NSNull null] ]);
+      return;
+    }
     [addresses addObject:address];
   }
   callback(@[ [NSNull null], addresses ]);
@@ -186,6 +204,55 @@ RCT_EXPORT_METHOD(getBalance:(RCTResponseSenderBlock)callback) {
     return;
   }
   callback(@[ [NSNull null], result ]);
+}
+
+RCT_EXPORT_METHOD(getFee:(RCTResponseSenderBlock)callback) {
+  CHECK_FOR_WALLET();
+  NSString * result = [g_applicationWallet estimatedFee];
+  if (0 == [result length]) {
+    RCTLogInfo(@"Fee error: %@", MSMobileLastError());
+    callback(@[ RCTMakeError(@"Fee error", MSMobileLastError(), nil), [NSNull null] ]);
+    return;
+  }
+  callback(@[ [NSNull null], result ]);
+}
+
+RCT_EXPORT_METHOD(transactions:(RCTResponseSenderBlock)callback) {
+  return [self transactionPage:0 pageSize:-1 callback:callback];
+}
+
+RCT_EXPORT_METHOD(numTransactions:(RCTResponseSenderBlock)callback) {
+  CHECK_FOR_WALLET();
+  long result = [g_applicationWallet getNumTransactions];
+  if (0 == result) {
+    RCTLogInfo(@"Num txns error: %@", MSMobileLastError());
+    callback(@[ RCTMakeError(@"Num txns error", MSMobileLastError(), nil), [NSNull null] ]);
+    return;
+  }
+  callback(@[ [NSNull null], [NSNumber numberWithInt:(int)result] ]);
+}
+
+RCT_EXPORT_METHOD(transactionPage:(NSInteger)pageIndex pageSize:(NSInteger)pageSize callback:(RCTResponseSenderBlock)callback) {
+  CHECK_FOR_WALLET();
+  int numTxns = (int)[g_applicationWallet getNumTransactions];
+  if (-1 == numTxns) {
+    RCTLogInfo(@"Num transactions error: %@", MSMobileLastError());
+    callback(@[ RCTMakeError(@"Num transactions error", MSMobileLastError(), nil), [NSNull null] ]);
+    return;
+  }
+  NSMutableArray * txns = [[NSMutableArray alloc] init];
+  NSInteger start = (pageSize == -1 ? 0 : pageIndex * pageSize);
+  NSInteger end = (pageSize == -1 ? numTxns : start + pageSize);
+  for (NSInteger i = start; i < numTxns  &&  i < end; ++i) {
+    MSMobileTransaction * txn = [g_applicationWallet transactionAtIndex:(long)i];
+    if (nil == txn) {
+      RCTLogInfo(@"Get transaction error: %@", MSMobileLastError());
+      callback(@[ RCTMakeError(@"Get transaction error", MSMobileLastError(), nil), [NSNull null] ]);
+      return;
+    }
+    [txns addObject:txn];
+  }
+  callback(@[ [NSNull null], txns ]);
 }
 
 RCT_EXPORT_METHOD(sendSen:(NSString *)dest amount:(NSString *)amount callback:(RCTResponseSenderBlock)callback) {
