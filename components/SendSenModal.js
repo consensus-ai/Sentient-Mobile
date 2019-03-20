@@ -5,9 +5,8 @@ import { ScaledSheet } from 'react-native-size-matters'
 
 import { CloseIcon } from './Icons'
 import { SendSenSuccess } from './SendSenSuccess'
-import { ClearButton } from './Buttons'
+import { ClearButton, CameraButton } from './Buttons'
 import { hastingsToSen } from '../utils/converter'
-import { CameraButton } from './CameraButton'
 
 
 export class SendSenModal extends Component {
@@ -25,6 +24,7 @@ export class SendSenModal extends Component {
     this.clearAddress = this.clearAddress.bind(this)
     this.clearAmount = this.clearAmount.bind(this)
     this.showSendForm = this.showSendForm.bind(this)
+    this.scanQRCode = this.scanQRCode.bind(this)
   }
 
   componentDidMount () {
@@ -85,9 +85,21 @@ export class SendSenModal extends Component {
     return address.length === 76 && amount > 0
   }
 
+  closeHandler () {
+    const { closeModal } = this.props
+    closeModal()
+    this.setState({ showQRCode: false })
+  }
+
+  scanQRCode () {
+    this.setState({ showModal: false })
+    const { navigation } = this.props
+    navigation.navigate('ScanQRCode')
+  }
+
   render () {
     const { address, amount, showSendForm, fee } = this.state
-    const { closeModal, showModal } = this.props
+    const { showModal } = this.props
 
     return(
       <Modal
@@ -97,7 +109,7 @@ export class SendSenModal extends Component {
         <View style={styles.container}>
           <View style={styles.header}>
             <Text style={styles.headerText}>Send SEN</Text>
-            <TouchableOpacity style={styles.closeButton} onPress={() => { closeModal() }} >
+            <TouchableOpacity style={styles.closeButton} onPress={ () => this.closeHandler() }>
               <CloseIcon />
             </TouchableOpacity>
           </View>
@@ -110,7 +122,7 @@ export class SendSenModal extends Component {
                     multiline={true}
                     numberOfLines={4}
                     autoCorrect={false}
-                    autoCapitalize={false}
+                    autoCapitalize='none'
                     style={styles.field}
                     onFocus={() => { this.setState({addressFocused: true}) }}
                     onBlur={() => { this.setState({addressFocused: false}) }}
@@ -119,6 +131,7 @@ export class SendSenModal extends Component {
                   />
                 </View>
                 { address.length !== 0 && (<ClearButton style={{top: '30%'}} handler={this.clearAddress} />) }
+                { address.length === 0 && (<CameraButton style={{top: '22%'}} handler={this.scanQRCode} />) }
                 <Text style={styles.hint}>Make sure the address is correct.</Text>
               </View>
               <View style={styles.amount}>

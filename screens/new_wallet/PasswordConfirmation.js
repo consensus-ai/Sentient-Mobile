@@ -110,7 +110,7 @@ export class PasswordConfirmation extends Component {
         if (success){
           NativeModules.MobileWallet.primarySeed((err, seed) => {
             if (seed) {
-              navigation.navigate('CheckSeed', { seed })
+              navigation.navigate('WalletCreated', { seed })
             } else {
               navigation.navigate('Error', { message: err.message })
             }

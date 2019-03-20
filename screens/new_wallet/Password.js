@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import {View, TextInput, Text} from "react-native"
+import { View, TextInput, Text } from "react-native"
 import { HeaderText, DescriptionText } from "../../components/TextBlocks"
 import { ScaledSheet } from 'react-native-size-matters'
 
@@ -91,44 +91,3 @@ let styles = ScaledSheet.create({
     color: "#8A8A8F"
   }
 })
-
-
-// import { View, Text, Button, NativeModules, TextInput} from 'react-native'
-
-// export class NewWallet extends Component {
-  
-
-//   constructor(props) {
-//     super(props);
-//     this.state = {text: ''};
-//   }
-
-//   componentDidMount() {
-    // NativeModules.MobileWallet.openWalletWithPassword('test', (err, data) => {
-    //   NativeModules.MobileWallet.numAddresses((err, data) => {
-    //     this.setState({countAddresses: data})
-    //     NativeModules.MobileWallet.addresses((err, data) => {
-    //       this.setState({address: data})
-    //     })
-    //     // for (i = 0; i < data; i++) {
-    //     //   NativeModules.MobileWallet.addressAtIndex(i, (err, data) => {
-    //     //     this.setState({address: [...this.state.address, data]})
-    //     //   })
-    //     // }
-    //   })
-    // })
-//   }
-
-//   render() {
-//     return (
-//       <View>
-//         <TextInput
-//           secureTextEntry={true}
-//           style={{height: 60}}
-//           placeholder="Create Password"
-//           onChangeText={(text) => this.setState({text})}
-//         />
-//       </View>
-//     );
-//   }
-// }

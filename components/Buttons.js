@@ -1,8 +1,8 @@
 import React from 'react'
-import { TouchableHighlight, Text, View } from 'react-native'
+import { TouchableHighlight, TouchableOpacity, Text, View } from 'react-native'
 import { ScaledSheet } from 'react-native-size-matters'
 
-import { ClearIcon } from './Icons'
+import { ClearIcon, CameraIcon } from './Icons'
 
 
 export const WelcomeButton = ({text, navigate}) => {
@@ -103,5 +103,21 @@ export const ClearButton = ({ handler, style = {} }) => {
     <TouchableHighlight style={[styles.button, style]} onPress={handler}>
       <ClearIcon />
     </TouchableHighlight>
+  )
+}
+
+export const CameraButton = ({ handler, style = {} }) => {
+  let styles = ScaledSheet.create({
+    button: {
+      right: 15,
+      position: 'absolute',
+      width: 24,
+      height: 24
+    }
+  })
+  return (
+    <TouchableOpacity style={[styles.button, style]} onPress={handler}>
+      <CameraIcon />
+    </TouchableOpacity>
   )
 }

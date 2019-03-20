@@ -122,7 +122,7 @@ export class ImportSeed extends Component {
         <View style={styles.swipe}>
           <Carousel
             ref={(c) => { this._carousel = c }}
-            autoCapitalize={false}
+            autoCapitalize='none'
             data={Seed}
             slideStyle={{justifyContent: 'center'}}
             activeAnimationType='timing'

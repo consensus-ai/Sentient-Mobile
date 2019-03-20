@@ -31,14 +31,14 @@ export class Transactions extends Component {
     this.toggleReceiveModal = this.toggleReceiveModal.bind(this)
   }
 
-  //TODO REMOVE
-  componentDidMount() {
+  async componentDidMount() {
+    //TODO REMOVE
     SplashScreen.hide()
     NativeModules.MobileWallet.getBalance((err, balance) => {
-      console.log(balance)
       if (err) {
         console.log(err)
         alert(err)
+        this.props.navigation.navigate('WalletScreen')
       } else {
         this.setState({ balance })
       }
@@ -101,7 +101,7 @@ export class Transactions extends Component {
             <TransactionButton text="Receive" handler={this.toggleReceiveModal} />
           </View>
         )}
-        <SendSenModal closeModal={this.toggleSendModal} showModal={showSendModal} />
+        <SendSenModal closeModal={this.toggleSendModal} showModal={showSendModal} navigation={this.props.navigation} />
         <ReceiveSenModal closeModal={this.toggleReceiveModal} showModal={showReceiveModal} />
       </View>
     )

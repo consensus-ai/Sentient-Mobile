@@ -46,10 +46,10 @@ export class WalletScreen extends Component {
   signIn () {
     const { password } = this.state
     NativeModules.MobileWallet.openWalletWithPassword(password, (err, success) => {
-      if (success) {
+      if (success || err.message === "Wallet object already exists") {
         this.props.navigation.navigate('Transactions')
       } else {
-        console.log(err)
+        console.log(err.message)
         this.setState({ passwordError: true })
       }
     })
@@ -60,7 +60,7 @@ export class WalletScreen extends Component {
     const { passwordFocused, walletExists, password, passwordError } = this.state
 
     return (
-      <ImageBackground source={require('../assets/images/content-bg.png')} style={styles.backgroundImage} >
+      <ImageBackground blurRadius={7} source={require('../assets/images/content-bg.png')} style={styles.backgroundImage} >
         <View style={styles.container}>
           <Image source={require('../assets/images/icon.png')} style={styles.logo} />
           { walletExists && (
@@ -97,7 +97,7 @@ export class WalletScreen extends Component {
 let styles = ScaledSheet.create({
   backgroundImage: {
     flex: 1,
-    width: '100%',
+    width: '100%'
   },
   container: {
     position: 'relative',
