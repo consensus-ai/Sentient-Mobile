@@ -1,12 +1,23 @@
-import React, { Component } from 'react'
-import { Text, TouchableOpacity } from 'react-native'
-import { ScaledSheet } from 'react-native-size-matters'
-import QRCodeScanner from 'react-native-qrcode-scanner'
+import React, { Component } from "react"
 
+import { View, Dimensions, Text, TouchableHighlight } from "react-native"
+import QRCodeScanner from "react-native-qrcode-scanner"
+import Icon from "react-native-vector-icons/Ionicons"
+import { GoBackIcon } from "../../components/Icons"
+
+const { height, width } = Dimensions.get("window")
 
 export class ScanQRCode extends Component {
-  static navigationOptions = {
-    header: null
+  static navigationOptions = ({ navigation }) => {
+    return {
+      headerLeft: (
+        <TouchableHighlight
+          underlayColor="#FFFFFF"
+          onPress={() => { navigation.goBack() }}>
+          <GoBackIcon />
+        </TouchableHighlight>
+      ),
+    }
   }
 
   constructor(props) {
@@ -15,49 +26,95 @@ export class ScanQRCode extends Component {
   }
 
   onSuccess(e) {
-    alert(e.data)
+    const { address, amount } = JSON.parse(e.data)
   }
 
-  render () {
+  render() {
     return (
       <QRCodeScanner
+        showMarker
         onRead={this.onSuccess}
-        topContent={
-          <Text style={styles.centerText}>
-            Go to <Text style={styles.textBold}>wikipedia.org/wiki/QR_code</Text> on your computer and scan the QR code.
-          </Text>
-        }
-        bottomContent={
-          <Text style={styles.buttonText}>OK. Got it!</Text>
+        cameraStyle={{ height: height }}
+        customMarker={
+          <View style={styles.rectangleContainer}>
+            <View style={styles.topOverlay} />
+            <View style={{ flexDirection: "row" }}>
+              <View style={styles.leftAndRightOverlay} />
+
+              <View style={styles.rectangle}>
+                <Icon
+                  style={{position: 'absolute', top: "-11%"}}
+                  name="ios-qr-scanner"
+                  size={width * 0.78}
+                  color={iconScanColor}
+                />
+              </View>
+
+              <View style={styles.leftAndRightOverlay} />
+            </View>
+            <View style={styles.bottomOverlay}>
+              <Text style={{ fontSize: 15, color: "white" }}>
+                Position QR code in this frame
+              </Text>
+            </View>
+          </View>
         }
       />
     )
   }
 }
 
-let styles = ScaledSheet.create({
-  button: {
-    right: 10,
-    top: "22%",
-    position: 'absolute',
-    width: 24,
-    height: 24
-  },
-  centerText: {
+const overlayColor = "rgba(0,0,0,0.5)"
+
+const rectDimensions = width * 0.65
+
+const scanBarWidth = width * 0.46
+const scanBarHeight = width * 0.0025
+const scanBarColor = "#22ff00"
+
+const iconScanColor = "#FFFFFF"
+
+const styles = {
+  rectangleContainer: {
     flex: 1,
-    fontSize: 18,
-    padding: 32,
-    color: '#777',
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: "transparent"
   },
-  textBold: {
-    fontWeight: '500',
-    color: '#000',
+  rectangle: {
+    position: 'relative',
+    height: rectDimensions,
+    width: rectDimensions,
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: "transparent",
+    borderWidth: 2
   },
-  buttonText: {
-    fontSize: 21,
-    color: 'rgb(0,122,255)',
+
+  topOverlay: {
+    height: '20%',
+    width: width,
+    backgroundColor: overlayColor
   },
-  buttonTouchable: {
-    padding: 16,
+
+  bottomOverlay: {
+    flex: 1,
+    height: width,
+    width: width,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: overlayColor,
+    paddingBottom: width * 0.25
   },
-})
+
+  leftAndRightOverlay: {
+    height: width * 0.65,
+    width: width,
+    backgroundColor: overlayColor
+  },
+  scanBar: {
+    width: scanBarWidth,
+    height: scanBarHeight,
+    backgroundColor: scanBarColor
+  }
+}

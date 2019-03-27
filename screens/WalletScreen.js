@@ -60,7 +60,7 @@ export class WalletScreen extends Component {
     const { passwordFocused, walletExists, password, passwordError } = this.state
 
     return (
-      <ImageBackground blurRadius={7} source={require('../assets/images/content-bg.png')} style={styles.backgroundImage} >
+      <ImageBackground source={require('../assets/images/content-bg.png')} style={styles.backgroundImage} >
         <View style={styles.container}>
           <Image source={require('../assets/images/icon.png')} style={styles.logo} />
           { walletExists && (

@@ -38,6 +38,8 @@ json included since serialized from client this structure
 - (void)setAmount:(NSString*)v;
 - (long)stamp;
 - (void)setStamp:(long)v;
+- (BOOL)pending;
+- (void)setPending:(BOOL)v;
 - (BOOL)matured;
 - (void)setMatured:(BOOL)v;
 - (NSString*)singleAddress;

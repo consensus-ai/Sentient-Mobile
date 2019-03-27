@@ -2,11 +2,12 @@ import React, { Component } from 'react'
 import { View, Text, NativeModules } from 'react-native'
 import { ScaledSheet } from 'react-native-size-matters'
 
-import { WalletIcon, TransactionStatusIcon, CashOutIcon, CashInIcon } from '../../components/Icons'
+import { TransactionStatusIcon, CashOutIcon, CashInIcon } from '../../components/Icons'
 import { TransactionButton } from "../../components/Buttons"
 import { SendSenModal } from "../../components/SendSenModal"
 import { ReceiveSenModal } from "../../components/ReceiveSenModal"
 import { formatBalance } from '../../utils/converter'
+import { SenIcon } from '../../components/Icons'
 
 //TODO REMOVE
 import SplashScreen from 'react-native-splash-screen'
@@ -40,6 +41,7 @@ export class Transactions extends Component {
         alert(err)
         this.props.navigation.navigate('WalletScreen')
       } else {
+        console.log(balance)
         this.setState({ balance })
       }
     })
@@ -64,12 +66,14 @@ export class Transactions extends Component {
       <View style={styles.container}>
         <View style={styles.wallet}>
           <View style={styles.header}>
-            <Text style={styles.headerText}>Wallet</Text>
-            <WalletIcon />
+            <Text style={styles.headerText}>Current Balance</Text>
           </View>
           <View style={styles.amountBlock}>
             <Text style={styles.amountValue}>{formatBalance(balance)}</Text>
-            <Text style={styles.amountCurrency}>sen</Text>
+            <View style={{paddingLeft: 8}}>
+              <SenIcon />
+              <Text style={styles.amountCurrency}>sen</Text>
+            </View>
           </View>
           <View>
             <View style={styles.date}>
@@ -119,8 +123,7 @@ let styles = ScaledSheet.create({
     width: "90%",
   },
   header: {
-    justifyContent: 'space-between',
-    flexDirection: 'row'
+    alignItems: 'center'
   },
   headerText: {
     fontSize: '34@vs'
@@ -132,7 +135,7 @@ let styles = ScaledSheet.create({
     borderColor: '#EBEBEB',
     borderBottomWidth: 1,
     flexDirection: 'row',
-    justifyContent: 'center',
+    justifyContent: 'flex-end',
     width: '100%'
   },
   amountValue: {
@@ -141,14 +144,15 @@ let styles = ScaledSheet.create({
     fontWeight: '500'
   },
   date: {
-    paddingTop: 10, paddingBottom: 10
+    paddingTop: 10,
+    paddingBottom: 10
   },
   dateText: {
     fontSize: 22
   },
   amountCurrency: {
     fontSize: '17@vs',
-    paddingTop: '22@vs',
+    paddingBottom: '10@vs',
     textTransform: 'uppercase',
     fontWeight: '500',
     color: "#666666"

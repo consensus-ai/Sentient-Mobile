@@ -41,12 +41,13 @@ export class ReceiveSenModal extends Component {
         console.log(err)
         alert(err.message)
       } else {
+        let addrs = this.state.addressesFromStorage
         let addressPayload = {
-          name: '',
+          name: `New Address ${addrs.length + 1}`,
           address: address
         }
-        let addrs = this.state.addressesFromStorage
-        addrs.push(addressPayload)
+        addrs.unshift(addressPayload)
+        this.saveKey(addrs)
         this.setState({addressesFromStorage: addrs})
       }
     })
@@ -133,7 +134,7 @@ export class ReceiveSenModal extends Component {
                 >
                 { addressesFromStorage.map(({address, name}, index) => {
                   return (
-                    <View key={address} style={styles.addressRow}>
+                    <View key={address} style={[styles.addressRow, (addressesFromStorage.length === (index + 1) ? {paddingBottom: verticalScale(80)} : {})]}>
                       <View style={{flexDirection: 'row'}}>
                         <TouchableHighlight
                           underlayColor='#FFFFFF'
@@ -150,12 +151,12 @@ export class ReceiveSenModal extends Component {
                               style={{ paddingBottom: 5, paddingRight: 10, fontSize: 17 }}
                               autoCorrect={false}
                               onChangeText={(text) => this.onChangeHandler(text, address, index)}
-                              value={(address && name) || `New Address ${index + 1}`}
+                              value={name}
                               onFocus={()=> this.inputs[index].clear() } />
                           </View>
-                          <View style={{borderStyle: 'solid', borderColor: '#EBEBEB', borderBottomWidth: 1}}>
+                          <TouchableHighlight style={{borderStyle: 'solid', borderColor: '#EBEBEB', borderBottomWidth: 1}} onPress={() => { this.generateQR(address) }}>
                             <Text style={{fontSize: 11, color: 'rgba(0, 0, 0, 0.4)', paddingBottom: 10}}>{address}</Text>
-                          </View>
+                          </TouchableHighlight>
                         </View>
                       </View>
                     </View>
@@ -167,7 +168,7 @@ export class ReceiveSenModal extends Component {
                 <View style={styles.QRCode}>
                   <QRCode
                     value={JSON.stringify({address: address, amount: amount})}
-                    size={verticalScale(120)}
+                    size={verticalScale(130)}
                     bgColor='#000000'
                     fgColor='#FFFFFF'
                   />
@@ -192,7 +193,7 @@ export class ReceiveSenModal extends Component {
           </View>
             <View style={{width: '100%', position: "absolute", bottom: 15}}>
               <TouchableHighlight style={[styles.button, { backgroundColor: "#0045E3" }]} onPress={() => showQRCode ? this.copyToClickboard() : this.createAddress() } >
-                <Text style={[styles.buttonText, { color: "#FFFFFF" }]}>{showQRCode ? 'Copy Address to Clickboard' : 'Create a New Address'}</Text>
+                <Text style={[styles.buttonText, { color: "#FFFFFF" }]}>{showQRCode ? 'Copy Address to Clipboard' : 'Create a New Address'}</Text>
               </TouchableHighlight>
             </View>
         </View>
@@ -232,14 +233,13 @@ const styles = ScaledSheet.create({
     paddingTop: '18@vs',
     flexDirection: 'row',
     justifyContent: 'center',
-
   },
   modal: {
     justifyContent: "flex-end",
     margin: 0,
   },
   addresses: {
-    height: 300,
+    height: '400@vs',
     width: "100%",
   },
   button: {
@@ -292,7 +292,11 @@ const styles = ScaledSheet.create({
     paddingTop: '10@vs',
   },
   addressText: {
-    textAlign: 'center',
-    fontSize: '13@vs'
+    paddingLeft: 15,
+    paddingRight: 15,
+    fontSize: '11@vs',
+    fontFamily: 'AvenirNext-Medium',
+    color: "rgba(0, 0, 0, 0.4)",
+    letterSpacing: 0.18
   }
 })

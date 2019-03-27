@@ -1,8 +1,8 @@
 import React, { Component } from 'react'
-import { View, TextInput, Text, NativeModules } from "react-native"
+import { View, TextInput, Text, NativeModules, TouchableHighlight } from "react-native"
 import { ScaledSheet } from 'react-native-size-matters'
 
-import { InputIcon } from "../../components/Icons"
+import { InputIcon, GoBackIcon } from "../../components/Icons"
 import { HeaderText, DescriptionText } from "../../components/TextBlocks"
 import { BlueButton } from "../../components/Buttons"
 
@@ -15,9 +15,16 @@ const colors = {
 export class PasswordConfirmation extends Component {
   static navigationOptions = ({ navigation }) => {
     return {
-      headerTitle: 'New Wallet',
-      headerLeft: null,
-      headerStyle: { borderBottomWidth: 0 }
+      headerTitle: 'Setup',
+      headerLeft: (
+        <TouchableHighlight
+          underlayColor="#FFFFFF"
+          onPress={() => { navigation.goBack() }}>
+          <GoBackIcon />
+        </TouchableHighlight>
+      ),
+      headerStyle: { borderBottomWidth: 0 },
+      headerTitleStyle: { color: '#D3D6DC' },
     }
   }
 
@@ -127,10 +134,14 @@ export class PasswordConfirmation extends Component {
   render() {
     const { password, passwordSubmitted, confirmPassword, confirmSubmitted, confirmError,
       passwordError, confirmFocused, passwordFocused, valid } = this.state
+
+    const { navigation } = this.props
+    const workflow = navigation.getParam('workflow', 'NewWallet')
+    const text = workflow === 'Seed' ? 'Before you import your seed, you must set a new password for your wallet.' : 'This password will be requested each time you enter the wallet.'
     return (
       <View style={styles.container}>
-        <HeaderText text='Create security password' />
-        <DescriptionText text='This password will be requested each time you enter the wallet.' />
+        <HeaderText text='Confirm Password' />
+        <DescriptionText text={text} />
         <View style={styles.inputs}>
           <View style={styles.inputGroup}>
             <View style={styles.input}>

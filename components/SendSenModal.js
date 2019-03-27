@@ -92,7 +92,8 @@ export class SendSenModal extends Component {
   }
 
   scanQRCode () {
-    this.setState({ showModal: false })
+    const { closeModal } = this.props
+    closeModal()
     const { navigation } = this.props
     navigation.navigate('ScanQRCode')
   }

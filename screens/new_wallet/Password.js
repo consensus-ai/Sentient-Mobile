@@ -6,9 +6,14 @@ import { ScaledSheet } from 'react-native-size-matters'
 export class Password extends Component {
   static navigationOptions = ({ navigation }) => {
     return {
-      headerTitle: 'New Wallet',
+      headerTitle: 'Setup',
       headerLeft: null,
-      headerStyle: { borderBottomWidth: 0 }
+      headerStyle: {
+        borderBottomWidth: 0,
+      },
+      headerTitleStyle: {
+        color: '#D3D6DC'
+      },
     }
   }
 
@@ -24,10 +29,11 @@ export class Password extends Component {
 
   render() {
     const { password, workflow } = this.state
+    const text = workflow === 'Seed' ? 'Before you import your seed, you must set a new password for your wallet.' : 'This password will be requested each time you enter the wallet.'
     return (
       <View style={styles.container}>
-        <HeaderText text='Create security password' />
-        <DescriptionText text='This password will be requested each time you enter the wallet.' />
+        <HeaderText text='Create Password' />
+        <DescriptionText text={text} />
         <View style={styles.inputs}>
           <View style={styles.inputGroup}>
             <View style={styles.input}>

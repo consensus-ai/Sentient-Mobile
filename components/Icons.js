@@ -10,7 +10,7 @@ export class TabBarIcon extends Component {
   render() {
     const { name, focused } = this.props
     let iconName = name.replace(/Stack/g,"").toLowerCase()
-    let iconColor = focused ? "#0045E3" : "#000000"
+    let iconColor = focused ? "#0045E3" : "#C7C9CD"
     return <Linericon name={iconName} size={25} color={iconColor} />
   }
 }
@@ -99,5 +99,11 @@ export class AddressIcon extends Component {
 export class AddAddress extends Component {
   render() {
     return <Linericon name='close' size={12} color="#ffffff" style={{ top: 10, left: 4, transform: [{ rotate: '45deg'}] }}/>
+  }
+}
+
+export class SenIcon extends Component {
+  render() {
+    return <Linericon name='sen' size={verticalScale(28)} color="#B2B2B2" style={{paddingLeft: 3}} />
   }
 }

@@ -6,7 +6,7 @@ import { verticalScale, moderateScale } from 'react-native-size-matters'
 export class HeaderText extends Component {
   render () {
     const { text } = this.props
-    return <Text style={{marginTop: moderateScale(10, 10), fontWeight: '600', fontSize: verticalScale(26), width: "75%", textAlign: "center", letterSpacing: verticalScale(1.6), lineHeight: verticalScale(28)}}>{text}</Text>
+    return <Text style={{marginTop: moderateScale(10, 10), fontWeight: '600', fontSize: verticalScale(25), width: "75%", color: '#000000', textAlign: "center", letterSpacing: verticalScale(1.6), lineHeight: verticalScale(28)}}>{text}</Text>
   }
 }
 

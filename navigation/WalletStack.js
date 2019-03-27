@@ -1,27 +1,17 @@
 import { createStackNavigator } from 'react-navigation'
 
-import { WalletScreen } from '../screens/WalletScreen'
 import { Transactions } from '../screens/wallet/Transactions'
-import { PasswordConfirmation } from '../screens/new_wallet/PasswordConfirmation'
-import { Password } from '../screens/new_wallet/Password'
-import { ImportSeed } from '../screens/new_wallet/ImportSeed'
-import { RecoveryPhrase } from '../screens/new_wallet/RecoveryPhrase'
-import { WalletCreated } from '../screens/new_wallet/WalletCreated'
+import { RecoveryPhrase } from '../screens/settings/RecoveryPhrase'
+import { WalletCreated } from '../screens/wallet/WalletCreated'
 import { ScanQRCode } from '../screens/wallet/ScanQRCode'
-import { Error } from '../screens/new_wallet/Error'
 
 export default createStackNavigator({
-  WalletScreen: WalletScreen,
-  Password: Password,
-  PasswordConfirmation: PasswordConfirmation,
-  RecoveryPhrase: RecoveryPhrase,
-  WalletCreated: WalletCreated,
-  ImportSeed: ImportSeed,
   Transactions: Transactions,
   ScanQRCode: ScanQRCode,
-  Error: Error
+  RecoveryPhrase: RecoveryPhrase,
+  WalletCreated: WalletCreated,
 },  {
-  initialRouteName: 'WalletScreen',
+  initialRouteName: 'Transactions',
   navigationOptions: {
     tabBarLabel: 'Wallet',
   }

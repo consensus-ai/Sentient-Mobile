@@ -1,49 +1,58 @@
 import React from 'react'
-import { TouchableHighlight, TouchableOpacity, Text, View } from 'react-native'
+import { TouchableHighlight, TouchableOpacity, Text, View, Image } from 'react-native'
 import { ScaledSheet } from 'react-native-size-matters'
 
 import { ClearIcon, CameraIcon } from './Icons'
 
 
-export const WelcomeButton = ({text, navigate}) => {
+export const WelcomeButton = ({text, handler}) => {
   let styles =  ScaledSheet.create({
     button:{
-      position: "relative",
-      padding: '16@s',
-      backgroundColor:"rgba(255, 255, 255, 0.7)",
-      borderRadius: '16@s',
-      marginTop: '15@s'
+      flex: 1,
+      position: 'absolute',
+      alignItems: 'center',
+      justifyContent: 'center',
+      backgroundColor: 'transparent'
+    },
+    touchable: {
+      marginBottom: '13@vs',
+      alignItems: 'center',
+      justifyContent: 'center',
     },
     buttonText:{
-      color:'#000000',
-      fontWeight: "600",
+      color:'#FFFFFF',
       fontSize: '15@s',
       letterSpacing: -0.24,
       textAlign:'center',
+      fontWeight: '500',
     }
   })
   return (
-    <TouchableHighlight
-      style={styles.button}
-      onPress={navigate}
-      underlayColor="rgba(255, 255, 255, 0.5)">
-        <Text style={styles.buttonText}>{text}</Text>
-    </TouchableHighlight>
+      <TouchableOpacity
+        style={styles.touchable}
+        onPress={handler}
+        activeOpacity={0.90}>
+        <Image resizeMode="contain" source={require('../assets/images/button-background.png')} style={{width: '95%'}} />
+        <View style={styles.button}>
+          <Text style={styles.buttonText}>{text}</Text>
+        </View>
+      </TouchableOpacity>
   )
 }
 
 export const BlueButton = ({text, handler}) => {
   let styles =  ScaledSheet.create({
     button:{
-      padding: '18@vs',
+      padding: '10@vs',
       backgroundColor: "#0045E3",
       borderRadius: '16@s',
     },
     buttonText:{
       color:'#FFFFFF',
-      fontWeight: "700",
       fontSize: '15@s',
       textAlign:'center',
+      fontWeight: '500',
+      letterSpacing: -0.24,
     }
   })
   return (
