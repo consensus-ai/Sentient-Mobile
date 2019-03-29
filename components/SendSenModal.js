@@ -13,9 +13,10 @@ export class SendSenModal extends Component {
 
   constructor (props) {
     super(props)
+    const { amount, address } = this.props
     this.state = {
-      address: '',
-      amount: '',
+      amount,
+      address,
       showSendForm: true,
       addressFocused: false,
       amountFocused: false,
@@ -149,7 +150,7 @@ export class SendSenModal extends Component {
                   />
                 </View>
                 { amount.length !== 0 && (<ClearButton style={{top: '22%'}} handler={this.clearAmount} />) }
-                <Text style={styles.hint}>{`Estimated fee: ${hastingsToSen(fee)} SEN/KB`}</Text>
+                <Text style={styles.hint}>{`Estimated fee: ${fee}`}</Text>
               </View>
               <View style={{width: '100%'}}>
                 <TouchableOpacity style={[styles.sendButton, (this.canSend() ? { backgroundColor: "#0045E3" } : {})]} onPress={() => this.sendSen()} >

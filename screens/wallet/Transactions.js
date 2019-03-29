@@ -2,12 +2,11 @@ import React, { Component } from 'react'
 import { View, Text, NativeModules } from 'react-native'
 import { ScaledSheet } from 'react-native-size-matters'
 
-import { TransactionStatusIcon, CashOutIcon, CashInIcon } from '../../components/Icons'
+import { TransactionStatusIcon, CashOutIcon, CashInIcon, SenIcon } from '../../components/Icons'
 import { TransactionButton } from "../../components/Buttons"
 import { SendSenModal } from "../../components/SendSenModal"
 import { ReceiveSenModal } from "../../components/ReceiveSenModal"
-import { formatBalance } from '../../utils/converter'
-import { SenIcon } from '../../components/Icons'
+import { formatBalance, groupByDay } from '../../utils/converter'
 
 //TODO REMOVE
 import SplashScreen from 'react-native-splash-screen'
@@ -22,10 +21,17 @@ export class Transactions extends Component {
 
   constructor (props) {
     super(props)
+    const { navigation } = this.props
+    const showSendModal = navigation.getParam('showSendModal', false)
+    const address = navigation.getParam('address', '')
+    const amount = navigation.getParam('amount', '')
     this.state = {
+      showSendModal,
+      address,
+      amount,
       showControls: true,
-      showSendModal: false,
       showReceiveModal: false,
+      transactions: {},
       balance: '0'
     }
     this.toggleSendModal = this.toggleSendModal.bind(this)
@@ -41,13 +47,17 @@ export class Transactions extends Component {
         alert(err)
         this.props.navigation.navigate('WalletScreen')
       } else {
-        console.log(balance)
         this.setState({ balance })
       }
     })
     NativeModules.MobileWallet.transactions((err, transactions) => {
-      console.log(err)
-      console.log(transactions)
+      if (err) {
+        console.log(err)
+        alert(err)
+      } else {
+        console.log(transactions)
+        this.setState({ transactions: transactions })
+      }
     })
   }
 
@@ -60,7 +70,10 @@ export class Transactions extends Component {
   }
 
   render () {
-    const { showControls, showSendModal, showReceiveModal, balance } = this.state
+    const { showControls, showSendModal, transactions, showReceiveModal, balance, address, amount } = this.state
+    const transactionGroups = groupByDay(transactions)
+    console.log("HERE")
+    console.log(transactionGroups)
 
     return (
       <View style={styles.container}>
@@ -75,29 +88,12 @@ export class Transactions extends Component {
               <Text style={styles.amountCurrency}>sen</Text>
             </View>
           </View>
-          <View>
-            <View style={styles.date}>
-              <Text style={styles.dateText}>Today</Text>
-            </View>
-            <View style={{flexDirection: 'row'}}>
-              <View style={{flexDirection: 'row'}}>
-                <CashOutIcon />
-                <View style={{ paddingLeft: 10, width: '90%' }}>
-                  <View style={{ flexDirection: 'row' }}>
-                    <Text style={{ paddingBottom: 5, paddingRight: 10, fontSize: 17, color: '#07AF9A' }}>
-                      +1 600
-                    </Text>
-                    <TransactionStatusIcon name='clock' />
-                  </View>
-                  <View style={{borderStyle: 'solid', borderColor: '#EBEBEB', borderBottomWidth: 1}}>
-                    <Text style={{fontSize: 11, color: 'rgba(0, 0, 0, 0.4)', paddingBottom: 10}}>
-                      e6dccb74854fad6bef3492ddb4f7816a6baf328ee7918216635ccc9b6407a8a4
-                    </Text>
-                  </View>
-                </View>
-              </View>
-            </View>
-          </View>
+            {
+              Object.keys(transactionGroups).map((transactionDay, index)=> {
+                let transaction = transactionGroups[transactionDay]
+                return <TransactionRow key={index} day={transactionDay} transactions={transaction} />
+              })
+            }
         </View>
         {showControls && (
           <View style={styles.controls}>
@@ -105,11 +101,43 @@ export class Transactions extends Component {
             <TransactionButton text="Receive" handler={this.toggleReceiveModal} />
           </View>
         )}
-        <SendSenModal closeModal={this.toggleSendModal} showModal={showSendModal} navigation={this.props.navigation} />
+        <SendSenModal closeModal={this.toggleSendModal} showModal={showSendModal} address={address} amount={amount} navigation={this.props.navigation} />
         <ReceiveSenModal closeModal={this.toggleReceiveModal} showModal={showReceiveModal} />
       </View>
     )
   }
+}
+
+const TransactionRow = ({day, transactions}) => {
+  return(
+    <View>
+      <View style={styles.date}>
+        <Text style={styles.dateText}>{day}</Text>
+      </View>
+      { transactions.map((transaction, index) => {
+        return (
+          <View key={index} style={{flexDirection: 'row'}}>
+            <View style={{flexDirection: 'row'}}>
+              { transaction.incoming ? (<CashInIcon />) : (<CashOutIcon />)}
+              <View style={{ paddingLeft: 10, width: '90%' }}>
+                <View style={{ flexDirection: 'row' }}>
+                  <Text style={{ paddingBottom: 5, paddingRight: 10, fontSize: 17, color: `${transaction.incoming ? '#07AF9A' : '#000000'}` }}>
+                    {`${transaction.incoming ? '+': '-'} ${transaction.amount}`}
+                  </Text>
+                  <TransactionStatusIcon name={transaction.pending ? 'clock' : 'checkbox' } />
+                </View>
+                <View style={{borderStyle: 'solid', borderColor: '#EBEBEB', borderBottomWidth: 1}}>
+                  <Text style={{fontSize: 11, color: 'rgba(0, 0, 0, 0.4)', paddingBottom: 10}}>
+                    {`${transaction.address.length ? transaction.id : 'Miner Payout'}`}
+                  </Text>
+                </View>
+              </View>
+            </View>
+          </View>
+        )
+      }) }
+    </View>
+  )
 }
 
 let styles = ScaledSheet.create({

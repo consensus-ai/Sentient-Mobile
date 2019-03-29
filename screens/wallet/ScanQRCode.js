@@ -27,6 +27,12 @@ export class ScanQRCode extends Component {
 
   onSuccess(e) {
     const { address, amount } = JSON.parse(e.data)
+    const { navigation } = this.props
+    navigation.navigate('Transactions', {
+      showModal: true,
+      address,
+      amount
+    })
   }
 
   render() {

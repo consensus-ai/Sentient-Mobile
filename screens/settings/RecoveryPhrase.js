@@ -2,20 +2,19 @@ import React, { Component } from 'react'
 import { View, Text, TouchableHighlight } from 'react-native'
 import { ScaledSheet } from 'react-native-size-matters'
 
-import { GoNextIcon } from "../../components/Icons"
+import { GoBackIcon } from "../../components/Icons"
 import { HeaderText, DescriptionText } from "../../components/TextBlocks"
 
 
 export class RecoveryPhrase extends Component {
   static navigationOptions = ({ navigation }) => {
     return {
-      headerTitle: 'New Wallet',
-      headerLeft: null,
-      headerRight: (
+      headerTitle: '',
+      headerLeft: (
         <TouchableHighlight
           underlayColor="#FFFFFF"
-          onPress={() => { navigation.navigate('Transactions') }}>
-          <GoNextIcon />
+          onPress={() => { navigation.goBack() }}>
+          <GoBackIcon />
         </TouchableHighlight>
       ),
       headerStyle: { borderBottomWidth: 0 }
@@ -29,10 +28,6 @@ export class RecoveryPhrase extends Component {
     this.state = {
       seed,
     }
-  }
-
-  prevStep () {
-    this.props.navigation.goBack()
   }
 
   render() {
@@ -52,8 +47,8 @@ export class RecoveryPhrase extends Component {
               </View>
             )
           })}
-          <View>
-            <Text>Tap and hold to copy</Text>
+          <View style={styles.chipsView}>
+            <Text style={styles.chipsText}>Tap and hold to copy</Text>
           </View>
         </View>
       </View>

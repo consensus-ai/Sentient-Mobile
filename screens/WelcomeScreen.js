@@ -51,7 +51,7 @@ export class WelcomeScreen extends Component {
         this.props.navigation.navigate('Transactions')
       } else {
         console.log(err.message)
-        this.setState({ passwordError: true })
+        this.setState({ passwordError: true, passwordFocused: true })
       }
     })
   }
@@ -70,6 +70,7 @@ export class WelcomeScreen extends Component {
           { walletExists ? (
             passwordFocused ? (
             <KeyboardAvoidingView style={styles.buttons} behavior="padding">
+              <Image resizeMode="contain" source={require('../assets/images/button-background.png')} style={{height: 56}} />
               <View style={styles.input}>
                 <Text style={[styles.label, {color: passwordError ? colors.error : (passwordFocused ? colors.active : colors.normal) }]}>Enter your password</Text>
                 <TextInput
@@ -80,7 +81,6 @@ export class WelcomeScreen extends Component {
                   autoFocus={passwordFocused}
                   onChangeText={(password) => this.passwordChanged(password)}
                   onFocus={() => this.setState({ passwordFocused: true })}
-                  onBlur={() => { this.setState({ passwordFocused: false }) }}
                   value={password}
                   onSubmitEditing={() => this.signIn() }
                 />
@@ -136,10 +136,11 @@ let styles = ScaledSheet.create({
     width: "80%",
   },
   input: {
-    position: 'relative',
-    borderRadius: '16@s',
-    backgroundColor: "#F7F8FA",
-    height: '56@s'
+    flex: 1,
+    position: 'absolute',
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: 'transparent'
   },
   field: {
     width: "100%",

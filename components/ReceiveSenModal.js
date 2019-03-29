@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import { View, Text, AsyncStorage, TouchableHighlight, ScrollView, Dimensions, Clipboard, TextInput, NativeModules } from 'react-native'
 import Modal from "react-native-modal"
 import { ScaledSheet, verticalScale } from 'react-native-size-matters'
-import QRCode from 'react-native-qrcode'
+import QRCode from 'react-native-qrcode-svg'
 
 import { CloseIcon, AddressIcon } from './Icons'
 
@@ -169,8 +169,6 @@ export class ReceiveSenModal extends Component {
                   <QRCode
                     value={JSON.stringify({address: address, amount: amount})}
                     size={verticalScale(130)}
-                    bgColor='#000000'
-                    fgColor='#FFFFFF'
                   />
                 </View>
                 <Text style={styles.addressText}>{address}</Text>

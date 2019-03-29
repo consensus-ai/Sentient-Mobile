@@ -1,4 +1,6 @@
 import BigNumber from 'bignumber.js'
+import moment from 'moment'
+import { groupBy } from 'lodash'
 
 BigNumber.config({ EXPONENTIAL_AT: 1e+9 })
 BigNumber.config({ DECIMAL_PLACES: 30 })
@@ -12,4 +14,15 @@ export const hastingsToSen = (hastings) => {
 
 export const formatBalance = (balance) => {
   return balance.replace(/(\d)(?=(\d{3})+\.)/g, '$1,')
+}
+
+export const groupByDay = (transactions) => {
+  if (!transactions.length) {
+    return {}
+  }
+  return groupBy(transactions, (transaction) => {
+    const currentDay = moment.unix(Date.now()).startOf('day')
+    const transactionDay = moment.unix(transaction.stamp).startOf('day')
+    return currentDay === transactionDay ? "Today" : transactionDay.format('DD MMMM')
+  })
 }

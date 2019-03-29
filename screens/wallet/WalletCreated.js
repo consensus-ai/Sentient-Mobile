@@ -32,7 +32,7 @@ export class WalletCreated extends Component {
 
   submit () {
     const { navigation } = this.props
-    const seed = navigation.getParam('seed', 'test test test')
+    const seed = navigation.getParam('seed', '')
     navigation.navigate('RecoveryPhrase', { seed })
   }
 
